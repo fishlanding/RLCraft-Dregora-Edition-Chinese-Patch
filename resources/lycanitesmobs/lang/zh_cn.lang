@@ -1,0 +1,111 @@
+# ========================================================================
+entity.archvile.name=大祭司(阿波罗尼)
+entity.archvile.description=统治下界某些区域的邪恶恶魔,大祭司喜欢闻到受害者焦灼的肉味,并喜欢看着其他恶魔撕碎他们的受害者!
+entity.archvile.habitat=大祭司居住在下界的深处。
+entity.archvile.combat=大祭司自己倾向于回避战斗,相反,他们会增强附近任何恶魔的力量,并会慢慢将目标吞没在火焰之中。
+# ========================================================================
+entity.behemoth.name=庞然大物(贝希摩斯)
+entity.behemoth.description=高大的恶魔怪物,庞然大物是专注于破坏的强大恶魔。
+entity.behemoth.habitat=庞然大物可以在下界找到,如果门户足够大,它们也会入侵。
+entity.behemoth.combat=这些恶魔会投掷地狱之火,这是一种由撕裂灵魂而创造的绿色火焰,不仅会烧灼,还会枯萎。
+# ========================================================================
+entity.beholder.name=观察者(纳克西里斯)
+entity.beholder.description=巨大的敌对性质,由无数眼睛和触手组成,永远渴望魔法能量!
+entity.beholder.habitat=观察者可以在山上找到,因为他们喜欢高处的地方,并居住在大型洞穴和废墟中,在夜晚出没。
+entity.beholder.combat=这些畸形生物创造强大的奥术风暴,从嘴中射出,这些攻击会释放出致命的激光,朝各个方向发射,并且在撞击时可能会爆炸。
+# ========================================================================
+entity.belph.name=贝尔芬(贝尔芬)
+entity.belph.description=小但危险的恶魔,只有一个目标,那就是杀戮和食用。
+entity.belph.habitat=这些恶魔可以在下界找到,并会通过传送门入侵。
+entity.belph.combat=贝尔芬投掷一种由下界魔法制成的不自然红色的末日之火。
+# ========================================================================
+entity.cacodemon.name=地狱恶魔(马尔瓦斯)
+entity.cacodemon.description=大型漂浮的生命畸形。地狱恶魔喜欢欺负恶魂,因为他们的眼泪很美味。可以被驯化成飞行宠物。
+entity.cacodemon.habitat=这些恶魔在下界的火红天空中飞来飞去。
+entity.cacodemon.combat=地狱恶魔喷吐出大型的恶魔闪电球,虽然不是真正的电力,但这些是由下界能量制成的爆炸性球体,会在撞击时枯萎并释放出更小的恶魔火花。
+# ========================================================================
+entity.djinn.name=精灵(泽菲尔)
+entity.djinn.description=骄傲的空气元素,守护着他们认为不应该在那里的天空!
+entity.djinn.habitat=作为空气元素,这些生物通常会在天空中出现。
+entity.djinn.combat=精灵释放出致命的旋风环,在撞击时会造成漂浮debuff。
+# ========================================================================
+entity.dweller.name=潜伏者(宁言)
+entity.dweller.description=水生两栖动物,可以短暂地滑到陆地上,但必须在变得太干燥时返回水中,因为在陆地上太久会死亡。在水中它们很快且致命,在雨中也能在陆地上生存。
+entity.dweller.habitat=这些生物可以在沼泽、黑暗森林和丛林的水域中找到。
+entity.dweller.combat=潜伏者有一种有毒的抓伤,在水中表现出色,在陆地上很容易被击败,除非正在下雨。
+# ========================================================================
+entity.gorger.name=吞食者(宇美巴斯)
+entity.gorger.description=巨大的熔岩蠕虫,它们可以在熔融岩浆中游泳,也可以在陆地上生存,并可以钻入像泥土这样的软质地面。
+entity.gorger.habitat=这些生物可以在大量熔岩中找到。
+entity.gorger.combat=吞食者通过释放几个熔岩球来攻击,虽然这些攻击很强大,但它们不太准确,使它们暴露在外。
+# ========================================================================
+entity.lobber.name=投掷者(切鲁费)
+entity.lobber.description=巨大的熔岩野兽,投掷者是令人难以置信的强大生物。
+entity.lobber.habitat=这些魔像可以在熔岩湖中找到。
+entity.lobber.combat=投掷者因其攻击而得名,他们会向受害者投掷大块的熔岩,这很快就会使该区域被临时熔岩淹没。
+# ========================================================================
+entity.lurker.name=潜伏者(奥斯蒂米恩)
+entity.lurker.description=潜伏者能完全融入他们的环境。他们咬人时会注入混乱的毒素,一旦受害者中毒,他们就会隐藏起来,让毒素发挥作用。可以被驯化成出色的宠物,也可以很好地用作苦力怕的守卫!
+entity.lurker.habitat=这些生物可以在森林和沼泽中找到,但会避开寒冷的地区。
+entity.lurker.combat=潜伏者的咬伤会毒害和致盲,咬了之后潜伏者会逃走并试图隐藏,让毒素发挥作用,如果毒素消退,它们会再次攻击。
+# ========================================================================
+entity.pinky.name=粉红怪(卡托加)
+entity.pinky.description=贪吃的野兽,特别喜欢吞食活的动物。可以用大型活动物饲养和繁衍。幼年粉红怪可以被驯养,成年后可以用作战斗坐骑。
+entity.pinky.habitat=粉红怪在下界到处寻找任何可以吃的东西。
+entity.pinky.combat=这些恶魔非常好斗,但会优先攻击更大更多汁的猎物,这可以用来诱使他们。
+# ========================================================================
+entity.quillbeast.name=刺猬兽(布鲁查)
+entity.quillbeast.description=背上长有锋利刺的大型啮齿动物,它们很容易受到威胁,会从远处射出这些刺。
+entity.quillbeast.habitat=这些野兽可以在平原、热带草原和森林中找到。
+entity.quillbeast.combat=刺猬兽用它们致命的刺进行攻击,这些刺也能切穿高草。
+# ========================================================================
+# entity.strider.name=行者(德伊奥尼乌斯)
+# entity.strider.description=这些巨大的两栖生物有点像虾,因为他们可怕的触手爪子而被人们所畏惧,这些触手爪子可以捕获并吞噬他们的受害者。
+# entity.strider.habitat=这些生物通常出现在大湖泊或河流中。
+# entity.strider.combat=行者会抓起受害者,慢慢吸干他们的生命,当在水中或下雨时,它们也很快。
+# ========================================================================
+entity.tarantula.name=塔兰图拉蜘蛛(利科萨)
+entity.tarantula.description=有毒的跳跃蜘蛛,会留下一条临时的黏性绿色蛛网。
+entity.tarantula.habitat=塔兰图拉蜘蛛可以在丛林和沼泽中找到。
+entity.tarantula.combat=这些蜘蛛有毒的咬伤,并且经常跳跃,必须小心它们的黏性绿色蛛网。
+# ========================================================================
+
+entity.zephyr.name=泽菲尔(雷德拉)
+entity.zephyr.description=周围有强大电场的凶猛电元素。辛德尔和泽菲尔元素可以融合创造出强大的雷德拉。
+entity.zephyr.habitat=作为电元素,泽菲尔从雷暴等电气天气中显现,也可能在普通暴雨期间偶尔显现。
+entity.zephyr.combat=泽菲尔会电击靠近它们的任何敌人,来自它们的直接攻击会造成麻痹。
+# ========================================================================
+item.raidrablade.name=泽菲尔(雷德拉)之刃
+item.zephyrcloud.name=精灵(泽菲尔)之云
+item.apollyonclaw.name=大祭司(阿波罗尼)之爪
+item.behemophethand.name=庞然大物(贝希摩斯)之手
+item.naxiriseye.name=观察者(纳克西里斯)之眼
+item.belphegorarm.name=贝尔芬(贝尔芬)之臂
+item.malwratheye.name=地狱恶魔(马尔瓦斯)之眼
+item.bruchaquill.name=刺猬兽(布鲁查)之刺
+item.cherufecore.name=投掷者(切鲁费)之核心
+# item.deioneusheart.name=行者(德伊奥尼乌斯)之心
+# ========================================================================
+
+item.raw_pinky_meat.name=生粉红怪(卡托加)肉
+item.raw_pinky_meat.description=一种类似猪肉的肉。这块肉中充满了枯萎的恶魔能量,必须用火来净化。
+#
+item.cooked_pinky_meat.name=熟粉红怪(卡托加)肉
+item.cooked_pinky_meat.description=一种类似猪肉的肉。味道像非常丰富、咸的牛肉。可以提供力量。
+# ========================================================================
+item.ironrod.name=钢棒
+item.ironhilt.name=钢护手
+item.ironpaxel.name=钢铲镐
+item.ironpikejoint.name=钢矛关节
+item.ironaxehead.name=钢斧头
+item.woodenrod.name=硬木棒
+item.woodenhilt.name=硬木护手
+item.woodenpaxel.name=硬木铲镐
+# ========================================================================
+tile.veswax.description=一种坚韧的蜂蜡状物质,滴着蜂蜜。
+
+entity.fireball=火球
+
+boss.block.protection.place=强大的力量阻止你放置这个方块。
+boss.block.protection.break=强大的力量阻止你破坏那个方块。
+boss.damage.protection.range=那个生物太强大,无法从这个距离伤害它。
