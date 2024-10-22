@@ -1181,7 +1181,7 @@
                     "repeat_relative:1": 1,
                     "ismain:1": 0,
                     "name:8": "强制收养龙",
-                    "desc:8": "If you plan on going around killing mama dragons, you better be ready to raise the eggs as your own!\n\n\n(Only one type is needed.){Embed}TypeImage;rlcraft:textures/quests/firedragon.png;150;150;256;256{Embed}"
+                    "desc:8": "如果你打算四处猎杀母龙，最好准备好把龙蛋当作自己的孩子来抚养！\n\n\n(只需一种类型即可。){Embed}TypeImage;rlcraft:textures/quests/firedragon.png;150;150;256;256{Embed}"
                 }
             },
             "tasks:9": {
@@ -6113,7 +6113,7 @@
                     "repeat_relative:1": 1,
                     "ismain:1": 0,
                     "name:8": "末日先驱",
-                    "desc:8": "Of course, where else would the best loot and biggest bads to kill be than a doomed nightmare dimension!\n\n{Embed}TypeImage;rlcraft:textures/quests/amalgalichaltar.png;100;100;256;256{Embed}"
+                    "desc:8": "当然，除了注定毁灭的噩梦维度，还能在哪里找到最丰厚的战利品和最强大的敌人呢！\n\n{Embed}TypeImage;rlcraft:textures/quests/amalgalichaltar.png;100;100;256;256{Embed}"
                 }
             },
             "tasks:9": {
@@ -10103,7 +10103,7 @@
                     "repeat_relative:1": 1,
                     "ismain:1": 0,
                     "name:8": "精炼阴影",
-                    "desc:8": "Who knew you could smelt darkness?{Embed}TypeImage;rlcraft:textures/quests/defiled.png;150;150;256;256{Embed}"
+                    "desc:8": "谁知道你能熔炼黑暗？{Embed}TypeImage;rlcraft:textures/quests/defiled.png;150;150;256;256{Embed}"
                 }
             },
             "tasks:9": {
@@ -14280,7 +14280,7 @@
                     "repeat_relative:1": 1,
                     "ismain:1": 0,
                     "name:8": "地狱之王",
-                    "desc:8": "Rip and Tear that devil a new one!{Embed}TypeImage;rlcraft:textures/quests/rahovart.png;150;150;256;256{Embed}"
+                    "desc:8": "撕裂那个恶魔，给他一个新的教训！{Embed}TypeImage;rlcraft:textures/quests/rahovart.png;150;150;256;256{Embed}"
                 }
             },
             "tasks:9": {
@@ -14818,7 +14818,7 @@
                     "repeat_relative:1": 1,
                     "ismain:1": 0,
                     "name:8": "你的肉已被消耗",
-                    "desc:8": "You guess the Astaroth had to come from somewhere. Hi, Mom. She doesn\u0027t have a plasma gun, so thank heaven for small favors. Instead, she has a super-chaingun. Crap.{Embed}TypeImage;rlcraft:textures/quests/asmodeus.png;150;150;256;256{Embed}"
+                    "desc:8": "你猜 Astaroth 一定来自某个地方。嗨，妈妈。她没有等离子枪，所以感谢上天的小恩小惠。相反，她有一把超级链枪。废话。{Embed}TypeImage;rlcraft:textures/quests/asmodeus.png;150;150;256;256{Embed}"
                 }
             },
             "tasks:9": {
@@ -15153,7 +15153,7 @@
                     "repeat_relative:1": 1,
                     "ismain:1": 0,
                     "name:8": "是谁挖的这个?",
-                    "desc:8": "Must\u0027ve taken a lot of dimmadigging!\n{Embed}TypeImage;rlcraft:textures/quests/largeundergroundtown.png;128;128;256;256{Embed}"
+                    "desc:8": "一定费了不少劲儿！\n{Embed}TypeImage;rlcraft:textures/quests/largeundergroundtown.png;128;128;256;256{Embed}"
                 }
             },
             "tasks:9": {
@@ -15209,7 +15209,7 @@
                     "repeat_relative:1": 1,
                     "ismain:1": 0,
                     "name:8": "农业天堂",
-                    "desc:8": "I wish I could just lay around in the sun all day on a farm... feel the breeze by a windmill... not get eaten by dragons...\n{Embed}TypeImage;rlcraft:textures/quests/plainswindmill.png;128;128;256;256{Embed}"
+                    "desc:8": "真希望能在农场上整天躺在阳光下……感受风车旁的微风……不被龙吃掉……\n{Embed}TypeImage;rlcraft:textures/quests/plainswindmill.png;128;128;256;256{Embed}"
                 }
             },
             "tasks:9": {
@@ -15694,7 +15694,7 @@
                     "repeat_relative:1": 1,
                     "ismain:1": 0,
                     "name:8": "四倍乐趣",
-                    "desc:8": "So many enemies... so much treasure!\n{Embed}TypeImage;rlcraft:textures/quests/fourtowers.png;128;128;256;256{Embed}"
+                    "desc:8": "好多敌人......好多宝藏！\n{Embed}TypeImage;rlcraft:textures/quests/fourtowers.png;128;128;256;256{Embed}"
                 }
             },
             "tasks:9": {
@@ -15901,7 +15901,7 @@
                     "repeat_relative:1": 1,
                     "ismain:1": 0,
                     "name:8": "可爱的小镇",
-                    "desc:8": "So lovely, it almost makes you forget about that dragon over the hill!\n{Embed}TypeImage;rlcraft:textures/quests/smalltown.png;128;128;256;256{Embed}"
+                    "desc:8": "如此可爱，几乎让你忘了山那边的那条龙！\n{Embed}TypeImage;rlcraft:textures/quests/smalltown.png;128;128;256;256{Embed}"
                 }
             },
             "tasks:9": {
@@ -16055,7 +16055,7 @@
                     "repeat_relative:1": 1,
                     "ismain:1": 0,
                     "name:8": "最友好的前哨站",
-                    "desc:8": "This place seems pretty comfy... I hope they have hot chocolate!\n{Embed}TypeImage;rlcraft:textures/quests/friendlyoutpost.png;128;128;256;256{Embed}"
+                    "desc:8": "这个地方看起来挺舒适的……希望他们有热巧克力！\n{Embed}TypeImage;rlcraft:textures/quests/friendlyoutpost.png;128;128;256;256{Embed}"
                 }
             },
             "tasks:9": {
@@ -16111,7 +16111,7 @@
                     "repeat_relative:1": 1,
                     "ismain:1": 0,
                     "name:8": "露营,但在户外",
-                    "desc:8": "Chillin\u0027 out on a hammock all day, camping at night, what\u0027s not to love?\n{Embed}TypeImage;rlcraft:textures/quests/plainscamp.png;128;128;256;256{Embed}"
+                    "desc:8": "整天躺在吊床上放松，晚上露营，还有什么不爱的呢？\n{Embed}TypeImage;rlcraft:textures/quests/plainscamp.png;128;128;256;256{Embed}"
                 }
             },
             "tasks:9": {
@@ -16167,7 +16167,7 @@
                     "repeat_relative:1": 1,
                     "ismain:1": 0,
                     "name:8": "邪恶学院",
-                    "desc:8": "I don\u0027t think all these vindicators are very conducive to my learning...\n{Embed}TypeImage;rlcraft:textures/quests/foreststronghold.png;128;128;256;256{Embed}"
+                    "desc:8": "我不认为所有这些卫道士都对我的学习非常有利......\n{Embed}TypeImage;rlcraft:textures/quests/foreststronghold.png;128;128;256;256{Embed}"
                 }
             },
             "tasks:9": {
@@ -16226,7 +16226,7 @@
                     "repeat_relative:1": 1,
                     "ismain:1": 0,
                     "name:8": "哇",
-                    "desc:8": "Good Job! Congrats! Winner Winner Dragon Dinner! Now take this and go!\n{Embed}TypeImage;rlcraft:textures/quests/congrats.png;128;128;256;256{Embed}"
+                    "desc:8": "干得好！恭喜！赢家赢家，龙宴晚餐！现在带上这个，出发吧！\n{Embed}TypeImage;rlcraft:textures/quests/congrats.png;128;128;256;256{Embed}"
                 }
             },
             "tasks:9": {
@@ -20254,7 +20254,7 @@
                     "repeat_relative:1": 1,
                     "ismain:1": 0,
                     "name:8": "吞噬灵魂者",
-                    "desc:8": "A being of pure madness and evil, herald of destruction and doom.\nBut I\u0027m sure you\u0027re strong enough to slay it, right?{Embed}TypeImage;rlcraft:textures/quests/amalgalich.png;150;150;256;256{Embed}"
+                    "desc:8": "一个纯粹的疯狂与邪恶的存在，毁灭与末日的先驱。\n但我相信你足够强大，能将其斩杀，对吧？{Embed}TypeImage;rlcraft:textures/quests/amalgalich.png;150;150;256;256{Embed}"
                 }
             },
             "tasks:9": {
@@ -23492,7 +23492,7 @@
                     "repeat_relative:1": 1,
                     "ismain:1": 0,
                     "name:8": "附魔不",
-                    "desc:8": "Time to spend 6 hours collecting enchantments in order to turn a sword into a nuke.{Embed}TypeImage;rlcraft:textures/quests/disenchanter.png;150;150;256;256{Embed}"
+                    "desc:8": "花费 6 小时收集附魔，将一把剑打造成核弹级武器的时刻到了。{Embed}TypeImage;rlcraft:textures/quests/disenchanter.png;150;150;256;256{Embed}"
                 }
             },
             "tasks:9": {
