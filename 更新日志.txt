@@ -1,2 +1,6 @@
-=====1.0.1=====
-1.bq任务更新
+=====1.0a=====
+1.bq任务汉化补全 (config\betterquesting\DefaultQuests.json)
+2.[垂直堆叠维度]dimstack 汉化补全
+3.[斯巴达的武器] spartanweaponry 汉化补全
+4.[动态的树：超多生物群系附属] dynamictreesbop 汉化补全
+5.套装效果汉化 (config\setbonus\1.12.2.009+.cfg)
