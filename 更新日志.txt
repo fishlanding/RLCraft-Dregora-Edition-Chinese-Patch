@@ -4,3 +4,9 @@
 3.[斯巴达的武器] spartanweaponry 汉化补全
 4.[动态的树：超多生物群系附属] dynamictreesbop 汉化补全
 5.套装效果汉化 (config\setbonus\1.12.2.009+.cfg)
+
+=====1.0.1=====
+1.脚本汉化更新
+
+=====1.0.1a=====
+1.RLMixins chat 汉化(config/rlmixins/dsurround_chat.cfg)

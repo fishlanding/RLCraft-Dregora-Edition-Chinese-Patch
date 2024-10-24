@@ -6,22 +6,13 @@ print("Dregora Recipe Script starting!");
 //Normal recipe adjustments
 //=================================
 
-//tooltips Conductivity
-for item in itemUtils.getItemsByRegexRegistryName(".*iron.*|.*chainmail.*|.*chain_skirt.*|.*steel.*") {
-    item.addTooltip("§e§o导电性 +1");
-}
+recipes.remove(<biomesoplenty:gem_block:1>);
 
-for item in itemUtils.getItemsByRegexRegistryName(".!scale|.*gold.*") {
-    item.addTooltip("§e§o导电性 +2");
-}
-
-for item in itemUtils.getItemsByRegexRegistryName(".*copper.*") {
-    item.addTooltip("§e§o导电性 +3");
-}
-
-for item in itemUtils.getItemsByRegexRegistryName(".*silver.*") {
-    item.addTooltip("§e§o导电性 +4");
-}
+// Re-add Diomesoplenty ruby
+recipes.addShaped("dregora53",<biomesoplenty:gem_block:1>,
+ [[<biomesoplenty:gem:1>,<biomesoplenty:gem:1>,<biomesoplenty:gem:1>],
+  [<biomesoplenty:gem:1>,<biomesoplenty:gem:1>,<biomesoplenty:gem:1>],
+  [<biomesoplenty:gem:1>,<biomesoplenty:gem:1>,<biomesoplenty:gem:1>]]);
 
 <variedcommodities:satchel>.displayName = "钱包";
 <mod_lavacow:dreamcatcher>.addTooltip("§6A 装满古币的钱包!");
@@ -30,8 +21,6 @@ recipes.addShapeless("dregora52",<variedcommodities:coin_gold> * 64,[<variedcomm
 
 // Remove Bread recipe
 recipes.removeByRecipeName("minecraft:bread");
-
-
 
 // Remove Enchantment table & add wither skulls to it:
 recipes.remove(<minecraft:enchanting_table>);

@@ -58,6 +58,10 @@ import crafttweaker.event.PlayerSleepInBedEvent;
 import mods.ctutils.world.World;
 import crafttweaker.event.PlayerInteractBlockEvent;
 import crafttweaker.event.LivingExperienceDropEvent;
+import crafttweaker.event.EntityJoinWorldEvent;
+import crafttweaker.entity.AttributeModifier;
+import crafttweaker.entity.Attribute;
+
 
 // use /ct syntax to validate scripts
 
@@ -66,6 +70,82 @@ print("Dregora Script starting!");
 //Debug lines true/false
 
 var Logging = false;
+
+//DMG and health multiplier script for spawning entities
+events.onEntityJoinWorld(function(event as EntityJoinWorldEvent){
+
+    if event.entity.world.isRemote() {return;}
+
+    if (event.entity instanceof IEntityLivingBase) {
+
+        var EntityBase as IEntityLivingBase = event.entity;
+        //overworld
+
+        if (event.world.dimension == 0) {
+
+            // Increase Health for mod_lavacow entities
+
+            if (isNull(EntityBase)) {return;}
+            if (isNull(EntityBase.definition)) {return;}
+            if (isNull(EntityBase.definition.id)) {return;}
+
+            if (EntityBase.definition.id has "mod_lavacow") {
+
+                EntityBase.getAttribute("generic.maxHealth").applyModifier(AttributeModifier.createModifier("DregoraHealth", 0.5, 1));
+                //EntityBase.health = EntityBase.health * 1.5;
+            }
+
+            // Lower health of parasites in cities
+            if (EntityBase.definition.id has "srparasites") {
+
+                var BiomeName = event.world.getBiome(EntityBase.getPosition3f()).name;
+                for Biome in ParasiteBuffBiomes {
+
+                    if (BiomeName == Biome) {
+
+                        //HealthMultiply 0.5
+                        EntityBase.getAttribute("generic.maxHealth").applyModifier(AttributeModifier.createModifier("DregoraHealth", -0.5, 1));
+                        //EntityBase.health = EntityBase.health * 0.5;
+
+                    }
+                }
+            }
+        }
+    }
+});
+
+events.onEntityLivingDamage(function(event as EntityLivingDamageEvent){
+
+    if event.entity.world.isRemote() {return;}
+
+    if (isNull(event.damageSource.trueSource)) {return;}
+    if (isNull(event.damageSource.trueSource.definition)) {return;}
+    if (isNull(event.damageSource.trueSource.definition.id)) {return;}
+
+    // nerf succors
+    if ((event.damageSource.trueSource.definition.id) == "srparasites:succor") {
+
+        //DMGmultiply 0.03
+        event.amount = event.amount / 0.03;
+
+    }
+
+    if event.damageSource.trueSource.world.dimension == 0 {
+
+        // Lower health of parasites in cities
+        var BiomeName = event.damageSource.trueSource.world.getBiome(event.entity.getPosition3f()).name;
+        for Biome in ParasiteBuffBiomes {
+            if (BiomeName == Biome) {
+                if !(event.damageSource.trueSource.definition.id == "srparasites:succor") && (event.damageSource.trueSource.definition.id has "srparasites") {
+
+                    //DMGMultiply 0.25
+                    event.amount = event.amount / 0.25;
+                }
+            }
+        }
+    }
+
+});
 
 // Berries nerf
 events.onEntityLivingUseItemFinish(function(event as Finish){
@@ -136,30 +216,34 @@ events.onEntityLivingDamage(function(event as EntityLivingDamageEvent){
 
                 }
             }
+			
+			if (isNull(event.damageSource.trueSource)) {return;}
+			if (!(event.damageSource.trueSource instanceof IEntityLivingBase)) {return;}
+			var player as IEntityLivingBase = event.damageSource.trueSource;
 
-            if (isNull(event.entity.definition.id)) {return;}
+			if (!isNull(player.uuid)) {
 
-            if (isNull(event.damageSource.trueSource.heldEquipment[0])) {return;}
+				if (isNull(player.heldEquipment[0])) {return;}
 
-            if (!isNull(event.entityLivingBase.mainHandHeldItem)) && (isNull(event.entityLivingBase.mainHandHeldItem.tag.disarm)) {
+				// If player hits entity with a weapon that has been disarmed it has a chance to reflect dmg
 
-                	event.entityLivingBase.mainHandHeldItem.mutable().updateTag({disarm:1,display:{Lore:["You sense a strange opposing aura from this weapon, as if it wants to cut you..."]}});
+				if (isNull(player.heldEquipment[0].tag)) {return;}
+				if (isNull(player.heldEquipment[0].tag.disarm)) {return;}
 
-            }
+				var randomNum = player.world.random.nextFloat(0, 100);
 
-            // If player hits entity with a weapon that has been disarmed it has a chance to reflect dmg
+				if (randomNum >= 5 ) {return;}
 
-            if (isNull(event.damageSource.trueSource.heldEquipment[0])) {return;}
-            if (isNull(event.damageSource.trueSource.heldEquipment[0].tag)) {return;}
-            if (isNull(event.damageSource.trueSource.heldEquipment[0].tag.disarm)) {return;}
+				if event.amount > player.health {
+					player.attackEntityFrom(MAGIC, player.health * 0.9 );
+					event.cancel();
 
-
-            var randomNum = event.damageSource.trueSource.world.random.nextFloat(0, 100);
-            if (randomNum >= 5 ) { return; }
-
-            event.damageSource.trueSource.attackEntityFrom(MAGIC, event.amount);
-            event.cancel();
-
+				} 
+				else {
+					player.attackEntityFrom(MAGIC, event.amount);
+					event.cancel();
+				}
+			}
         }
     }
 });
@@ -210,17 +294,31 @@ events.onPlayerRightClickItem(function(event as PlayerRightClickItemEvent){
 
         if ((BiomeName has "Desert") || (BiomeName has "Dune") || (BiomeName has "Wasteland")) {
 
+            if (!isNull(event.player.heldEquipment[0])) {
+
+                if (event.player.heldEquipment[0].definition.id == "mod_lavacow:kings_crown") {
+
             event.player.heldEquipment[0].mutable().shrink(1);
             val skeleton_king = <entity:mod_lavacow:skeletonking>.createEntity(event.player.world) as IEntity;
             skeleton_king.setPosition(SpawnPos);
             event.world.spawnEntity(skeleton_king);
 
+                }
+
+            } else if (!isNull(event.player.heldEquipment[1])) {
+
+                if (event.player.heldEquipment[1].definition.id == "mod_lavacow:kings_crown") {
+
+                    event.player.heldEquipment[1].mutable().shrink(1);
+                    val skeleton_king = <entity:mod_lavacow:skeletonking>.createEntity(event.player.world) as IEntity;
+                    skeleton_king.setPosition(SpawnPos);
+                    event.world.spawnEntity(skeleton_king);
+                }
+            }
         }
     }
 
 });
-
-
 
 // Aquaculture seaweed dropped from kelp, can be baked to become kelp and kelp can be used as a fuel source to smelt 2 items. (Same-ish as 1.16.5)
 events.onBlockHarvestDrops(function(blockDrops as BlockHarvestDropsEvent){
@@ -260,104 +358,6 @@ events.onBlockHarvestDrops(function(blockDrops as BlockHarvestDropsEvent){
 //=================================
 //DREGORARL SCRIPTS AND EVENTS
 //=================================
-
-var ArrowArrayLong = [
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:long_klutz"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:long_weight"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:long_broken_armor"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:long_spin"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "quark:long_mining_fatigue"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:long_magic_inhibition"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:long_drown"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:long_vulnerable"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:long_rust"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:long_perplexity"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "minecraft:long_slowness"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "mujmajnkraftsbettersurvival:long_antiwarp"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "mujmajnkraftsbettersurvival:long_decay"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "mujmajnkraftsbettersurvival:long_blindness"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:long_blindness"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:long_nausea"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:long_levitation"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:long_hunger"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:long_wither"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "elenaidodge:long_sluggish"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "minecraft:long_poison"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "minecraft:long_weakness"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "elenaidodge:long_feeble"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:long_broken_magic_shield"})
-	] as IItemStack[];
-
-var ArrowArray = [
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:strong_broken_armor"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:broken_armor"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:strong_klutz"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:klutz"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:dispel"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:strong_launch"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:launch"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:spin"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:strong_spin"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:curse"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:strong_curse"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "quark:mining_fatigue"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "quark:strong_mining_fatigue"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:disorganization"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "srparasites:foster"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "srparasites:coth"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "srparasites:fear"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "srparasites:res"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "srparasites:corro"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "srparasites:vira"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "srparasites:rage"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "srparasites:debar"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:magic_inhibition"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:weight"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:lightning"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:strong_explode"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:teleport"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:strong_teleport"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:teleport_surface"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:drown"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:teleport_spawn"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:strong_vulnerable"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:vulnerable"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:strong_rust"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:rust"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:perplexity"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "minecraft:slowness"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "mujmajnkraftsbettersurvival:milk"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "mujmajnkraftsbettersurvival:antiwarp"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "mujmajnkraftsbettersurvival:strong_decay"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "mujmajnkraftsbettersurvival:decay"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:nausea"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:levitation"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:strong_levitation"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:unluck"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:strong_hunger"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:hunger"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:strong_wither"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:wither"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "elenaidodge:sluggish"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "elenaidodge:strong_feeble"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "minecraft:harming"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "minecraft:strong_harming"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "minecraft:poison"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "minecraft:strong_poison"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "mujmajnkraftsbettersurvival:blindness"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "elenaidodge:feeble"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:strong_magic_inhibition"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:strong_weight"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:fire"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:invert"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:broken_magic_shield"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:strong_broken_magic_shield"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:strong_blindness"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:blindness"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "potioncore:explode"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "xat:extended_goblin"}),
-	<minecraft:tipped_arrow>.withTag({Potion: "xat:goblin"})
-	] as IItemStack[];
 
 // Entities with tipped arrow in offhand apply potion effect on target hit
 // Use ForgeData: NoArrowSwitch: 1 to exclude entities from changing arrows
@@ -451,68 +451,6 @@ events.onEntityLivingDamage(function(event as EntityLivingDamageEvent){
     }
 });
 
-var MentalPotions = [
-    <potion:lycanitesmobs:paralysis>,
-    <potion:lycanitesmobs:insomnia>,
-    <potion:lycanitesmobs:fear>,
-    <potion:potioncore:klutz>,
-    <potion:rustic:tipsy>,
-    <potion:minecraft:nausea>,
-    <potion:elenaidodge:sluggish>,
-    <potion:potioncore:spin>,
-    <potion:minecraft:mining_fatigue>,
-    <potion:lycanitesmobs:aphagia>,
-    <potion:minecraft:blindness>,
-    <potion:minecraft:unluck>,
-    <potion:srparasites:fear>,
-    <potion:potioncore:disorganization>
-    ] as IPotion[];
-
-var SussyPotions = [
-    <potion:potioncore:lightning>,
-    <potion:potioncore:explode>,
-    <potion:potioncore:launch>,
-    <potion:potioncore:explode>,
-    <potion:potioncore:launch>,
-    <potion:potioncore:explode>,
-    <potion:potioncore:launch>,
-    <potion:potioncore:explode>,
-    <potion:potioncore:launch>,
-    <potion:potioncore:explode>,
-    <potion:potioncore:launch>,
-    <potion:potioncore:explode>,
-    <potion:potioncore:launch>
-	] as IPotion[];
-
-var BlackListEntitiesNameChangeVillager = [
-    "Mentalberian",
-    "Sussyberian"
-	] as string[];
-
-var BlackListEntitiesNameChangeAny = [
-    "Dismounting",
-    "Dismounter",
-    "Dispel",
-    "Sarevok",
-    "Jester"
-	] as string[];
-
-var BlackListEntitiesNameChangePlayerbosses = [
-    "Blighted Shivaxi"
-	] as string[];
-
-var BlackListEntitiesNameChangeParasite = [
-    "Sentient Horror",
-    "Degrading Overseer",
-    "Malformed Observer",
-    "Shivaxi",
-    "Corrupted Carrier",
-    "Necrotic Blight"
-	] as string[];
-
-
-
-
 //Trading with entity named Sussyberian makes you explode
 //Trading with entity named mentalberian makes you nausiated, fear, etc
 events.onPlayerInteractEntity(function(event as PlayerInteractEntityEvent){
@@ -566,25 +504,28 @@ events.onPlayerInteractEntity(function(event as PlayerInteractEntityEvent){
     }
 
     if ((event.target.customName == "Mentalberian") && (event.target.definition.id == "minecraft:villager")) {
-
-        var randomPotion = event.target.world.random.nextFloat(0, 13);
-        var RandomMentalPotion = MentalPotions[randomPotion];
-        event.player.addPotionEffect(<potion:mod_lavacow:soiled>.makePotionEffect(200, 1));
-        event.player.addPotionEffect(RandomMentalPotion.makePotionEffect(200, 1));
+		
+		if !event.entity.world.isRemote() {
+			var randomPotion = event.target.world.random.nextFloat(0, 13);
+			var RandomMentalPotion = MentalPotions[randomPotion];
+			event.player.addPotionEffect(<potion:mod_lavacow:soiled>.makePotionEffect(200, 1));
+			event.player.addPotionEffect(RandomMentalPotion.makePotionEffect(200, 1));
+		}
         event.cancel();
 
     }
     if ((event.target.customName == "Sussyberian") && (event.target.definition.id == "minecraft:villager")) {
 
-        var randomPotion = event.target.world.random.nextFloat(0, 12);
-        var RandomSussyPotion = SussyPotions[randomPotion];
-        event.player.addPotionEffect(<potion:mod_lavacow:soiled>.makePotionEffect(200, 1));
-        event.player.addPotionEffect(RandomSussyPotion.makePotionEffect(1, 2));
+		if !event.entity.world.isRemote() {
+			var randomPotion = event.target.world.random.nextFloat(0, 12);
+			var RandomSussyPotion = SussyPotions[randomPotion];
+			event.player.addPotionEffect(<potion:mod_lavacow:soiled>.makePotionEffect(200, 1));
+			event.player.addPotionEffect(RandomSussyPotion.makePotionEffect(1, 2));
+		}
         event.cancel();
 
     }
 });
-
 
 // give bow starting 0 kills when crafted
 events.onPlayerCrafted(function(event as PlayerCraftedEvent){
@@ -601,16 +542,6 @@ events.onPlayerCrafted(function(event as PlayerCraftedEvent){
    }
 
 });
-
-var Mod_LavacowParasites = [
-    "minecraft:zombie",
-    "minecraft:husk",
-    "mod_lavacow:zombiefrozen",
-    "mod_lavacow:zombiemushroom",
-    "mod_lavacow:unburied",
-    "mod_lavacow:mummy"
-    ] as string[];
-
 
 //Killing entities gives living armor points
 events.onEntityLivingDeath(function(event as EntityLivingDeathEvent){
@@ -857,7 +788,6 @@ events.onEntityLivingDeath(function(event as EntityLivingDeathEvent){
     }
 });
 
-
 //Killing entities gives living bow points
 events.onEntityLivingDeath(function(event as EntityLivingDeathEvent){
 
@@ -1088,15 +1018,6 @@ events.onEntityLivingDamage(function(event as EntityLivingDamageEvent){
         }
     }
 
-    if(!isNull(event.damageSource.getDamageType())){
-        if ((event.damageSource.getDamageType() == "lightningBolt") || (event.damageSource.getDamageType() == "inWall")) {
-            if(event.entity.isRiding) {
-                event.entity.dismountRidingEntity();
-                event.entity.removePassengers();
-            }
-        }
-    }
-
     if (!isNull(event.damageSource.getTrueSource())){
         if(!isNull(event.damageSource.getTrueSource().getCustomName())){
             if((event.damageSource.getTrueSource().getCustomName() has "Dismounter") || (event.damageSource.getTrueSource().getCustomName() has "Dismounting")) {
@@ -1248,8 +1169,6 @@ events.onEntityLivingDamage(function(event as EntityLivingDamageEvent){
     }
 });
 
-
-
 //Function stopping teleport arrows & potions from having effect on entities within abyssal rift.
 events.onEntityLivingAttacked(function(event as EntityLivingAttackedEvent){
 
@@ -1293,8 +1212,6 @@ events.onProjectileImpactThrowable(function(event as ProjectileImpactThrowableEv
       }
 });
 
-
-
 //Function to give chorus fruit & teleportation potions a different effect on use
 events.onEntityLivingUseItemFinish(function(event as Finish){
       if ((event.item.tag.asString() has "potioncore:teleport") || (event.item.tag.asString() has "potioncore:strong_teleport") || (event.item.definition.id has "minecraft:chorus_fruit") || (event.item.definition.id has "bountifulbaubles:potionrecall")) {
@@ -1322,12 +1239,12 @@ events.onEntityLivingUseItemFinish(function(event as Finish){
       }
 });
 
-
 events.onEntityLivingUpdate(function(event as EntityLivingUpdateEvent){
 
-    if (event.entity.world.time % 10 != 0) {return;}
+    if (event.entity.world.isRemote()) { return; }
+    if (event.entity.world.time % 10 != 0) { return; }
     if (isNull(event.entity.definition)) { return; }
-    if (isNull(event.entity.definition)) { return; }
+    if (isNull(event.entity.definition.id)) { return; }
     if ((event.entity.definition.id) != "minecraft:villager") { return; }
     if(!isNull(event.entity.nbt.ForgeData.SussyBerianNaming)) { return; }
 
@@ -1349,9 +1266,6 @@ events.onEntityLivingUpdate(function(event as EntityLivingUpdateEvent){
         event.entity.setNBT({SussyBerianNaming: 1});
     }
 });
-
-
-var beckonarray = [];
 
 // SRParasites in overworld Script Biome Whitelist
 events.onEntityLivingUpdate(function(event as EntityLivingUpdateEvent){
@@ -1425,7 +1339,6 @@ events.onEntityLivingUpdate(function(event as EntityLivingUpdateEvent){
     }
 });
 
-
 // SRParasites in overworld Cancel Spawns if not in Whitelisted Biome and From spawner
 events.onCheckSpawn(function(event as EntityLivingExtendedSpawnEvent){
 
@@ -1451,8 +1364,6 @@ events.onCheckSpawn(function(event as EntityLivingExtendedSpawnEvent){
         }
     }
 });
-
-
 
 // SRParasites in overworld Cancel loot if not in Whitelisted Biome
 events.onEntityLivingDeathDrops(function(event as EntityLivingDeathDropsEvent){
@@ -1609,7 +1520,144 @@ function addPotionEffectHotSpring(player as IPlayer){
 	}
 }
 
-//Listener for thunder & player on mount
+//tooltips Conductivity
+for item in conductivity_1 {item.addTooltip("§e§o导电性 +1");}
+for item in conductivity_2 {item.addTooltip("§e§o导电性 +2");}
+for item in conductivity_3 {item.addTooltip("§e§o导电性 +3");}
+for item in conductivity_4 {item.addTooltip("§e§o导电性 +4");}
+for item in conductivity_5 {item.addTooltip("§e§o导电性 +5");}
+for item in conductivity_10 {item.addTooltip("§e§o导电性 +10");}
+
+
+
+events.onPlayerTick(function(event as PlayerTickEvent){
+
+    if event.player.world.isRemote() {return;}
+    if (event.player.world.time % 100 != 0) {return;}
+
+    // Only Thunder
+    if ((event.player.world.isRaining()) && ((event.player.world.getBrightness(event.player.position)) == 15)) {
+		
+		var doShock = false;
+		var isThunder = false;
+		
+		if (event.player.world.getWorldInfo().isThundering()) {
+			doShock = true;
+			isThunder = true;
+		}
+		else {
+			var block =  event.player.world.getBlock(event.player.position.x, event.player.position.y - 1, event.player.position.z);
+            if ((!isNull(event.player.getRidingEntity())) || (block.definition.id) == "minecraft:air") {
+				doShock = true;
+			}
+		}
+		
+		if (!doShock) {
+			event.player.setNBT({lightning_warning: 0});
+			return;
+		}
+		
+        // Assign conductivity rating for player
+        var EquipmentList = event.player.equipmentAndArmor as IItemStack[];
+        var silvercount as int = 0;
+
+        for item in EquipmentList {
+
+            if (!isNull(item)) {
+
+                for conductive_item in conductivity_1 {
+                    if (conductive_item.matches(item)) {silvercount += 1;}
+                }
+                for conductive_item in conductivity_2 {
+                    if (conductive_item.matches(item)) {silvercount += 2;}
+                }
+                for conductive_item in conductivity_3 {
+                    if (conductive_item.matches(item)) {silvercount += 3;}
+                }
+                for conductive_item in conductivity_4 {
+                    if (conductive_item.matches(item)) {silvercount += 4;}
+                }
+                for conductive_item in conductivity_5 {
+                    if (conductive_item.matches(item)) {silvercount += 5;}
+                }
+                for conductive_item in conductivity_10 {
+                    if (conductive_item.matches(item)) {silvercount += 5;}
+                }
+            }
+        }
+		
+		if (!isThunder) {
+			silvercount = silvercount / 2.0;
+		}
+
+        var RandomLightningInt = event.entity.world.random.nextFloat(0, 7);
+        var RandomLightningMessage = RandomLightningMessageArray[RandomLightningInt];
+
+        var warning = event.player.world.time + 60;
+		
+		var cooldown = event.player.world.time;
+		
+		if (!isThunder) {
+			cooldown += 1200;
+		}
+		else {
+			cooldown += 400;
+		}
+
+        if (isNull(event.player.nbt.ForgeData.lightning_cooldown)) {
+
+             event.player.setNBT({lightning_cooldown: 0});
+
+        }
+
+        if (event.player.world.time) > (event.player.nbt.ForgeData.lightning_cooldown)  {
+
+            if (isNull(event.player.nbt.ForgeData.lightning_warning)) {
+
+                var RandomInt = event.entity.world.random.nextFloat(0, 100);
+                if (RandomInt < silvercount) {
+
+                    // sets a cooldown for the warning (60 seconds)
+                    event.player.setNBT({lightning_warning: warning});
+
+                    // warns the player about impending lightning strike
+                    event.player.sendStatusMessage(RandomLightningMessage, true);
+                }
+            }
+
+            else if ((event.player.nbt.ForgeData.lightning_warning) == 0) {
+
+                var RandomInt = event.entity.world.random.nextFloat(0, 100);
+                if (RandomInt < silvercount) {
+
+                    // sets a cooldown for the warning (60 seconds)
+                    event.player.setNBT({lightning_warning: warning});
+
+                    // warns the player about impending lightning strike
+                    event.player.sendStatusMessage(RandomLightningMessage, true);
+                }
+            }
+
+            else if (event.player.world.time) > (event.player.nbt.ForgeData.lightning_warning)  {
+
+                // warning time cooldown is over, strike with lightning
+                event.player.addPotionEffect(<potion:potioncore:lightning>.makePotionEffect(1, 0));
+
+                // set cooldown before initiating the whole script again
+                event.player.setNBT({lightning_cooldown: cooldown});
+
+                // set warning to false so it skips the null check before and triggers the second check
+                event.player.setNBT({lightning_warning: 0});
+
+            }
+        }
+    }
+	else {
+		event.player.setNBT({lightning_warning: 0});
+	}
+
+});
+
 //Listener for player on mount in Abyssal Rift
 //Listener for player in SRP deadblood / BOP Hot Spring Water / Bauble listener / Teleportation on hit by skeleton with Teleport arrow
 events.onPlayerTick(function(event as PlayerTickEvent){
@@ -1617,73 +1665,44 @@ events.onPlayerTick(function(event as PlayerTickEvent){
     if event.player.world.isRemote() {return;}
     if (event.player.world.time % 20 != 0) {return;}
 
-    if (event.player.world.getWorldInfo().isThundering()) {
+    if (event.player.world.getBiome(event.player.getPosition3f()).name == "Abyssal Rift") {
 
-        var block =  event.player.world.getBlock(event.player.position.x, event.player.position.y - 1, event.player.position.z);
+        if (!isNull(event.player.getRidingEntity())) {
 
-        if ((!isNull(event.player.getRidingEntity())) || (block.definition.id) == "minecraft:air") {
+            var newtime = event.player.world.time + 100;
 
-            if (event.player.world.time % 100 == 0) {
+            if (isNull(event.player.nbt.ForgeData.lightning_cooldown_abyssal)) {
 
-                var RandomInt = event.entity.world.random.nextFloat(0, 100);
+                event.player.setNBT({lightning_cooldown_abyssal: newtime});
+                event.player.sendStatusMessage("一种不祥的感觉笼罩着你，仿佛有人在暗中窥视……或许最好步行前进。", true);
+                event.player.sendStatusMessage("一种不祥的感觉笼罩着你，仿佛有人在暗中窥视……或许最好步行前进。", false);
+            }
 
-                if (event.player.world.getBrightness(event.player.position)) == 15 {
+            else if (event.player.nbt.ForgeData.lightning_cooldown_abyssal == 0) {
 
-                    var EquipmentList = event.player.armorInventory as IItemStack[];
-                    var silvercount as int = 0;
-                    for item in EquipmentList {
+                event.player.setNBT({lightning_cooldown_abyssal: newtime});
+                event.player.sendStatusMessage("一种不祥的感觉笼罩着你，仿佛有人在暗中窥视……或许最好步行前进。", true);
+                event.player.sendStatusMessage("一种不祥的感觉笼罩着你，仿佛有人在暗中窥视……或许最好步行前进。", false);
+            }
 
-                        if (!isNull(item)) {
+            else if (event.player.world.time > event.player.nbt.ForgeData.lightning_cooldown_abyssal ){
 
-                            if ((item.definition.id) has "silver") {
-                                silvercount += 4;
-                            } else if ((item.definition.id) has "copper") {
-                                silvercount += 3;
-                            } else if ((item.definition.id) has "gold") && !((item.definition.id) has "scale") {
-                                silvercount += 2;
-                            } else if ((item.definition.id) has "steel") {
-                                silvercount += 1;
-                            } else if ((item.definition.id) has "iron") {
-                                silvercount += 1;
-                            } else if (((item.definition.id) has "chainmail") || ((item.definition.id) has "chain_skirt")) {
-                                silvercount += 1;
-                            }
-                        }
-                    }
+                event.player.setNBT({lightning_cooldown_abyssal: 0});
 
-                    var RandomInt = event.entity.world.random.nextFloat(0, 100);
+                var entityRiding = event.player.getRidingEntity();
+                event.player.removePassengers();
+                event.player.dismountRidingEntity();
+                event.player.addPotionEffect(<potion:potioncore:lightning>.makePotionEffect(1, 0));
 
-                    if RandomInt <= silvercount {
-
-                        event.player.addPotionEffect(<potion:potioncore:lightning>.makePotionEffect(1, 0));
-
-                    }
-                }
             }
         }
+		else {
+			event.player.setNBT({lightning_cooldown_abyssal: 0});
+		}
     }
-
-    if (event.player.world.getBiome(event.player.getPosition3f()).name == "Abyssal Rift") {
-
-        if (!isNull(event.player.getRidingEntity())) {
-
-            event.player.addPotionEffect(<potion:potioncore:lightning>.makePotionEffect(1, 0));
-            event.player.removePassengers();
-            event.player.dismountRidingEntity();
-
-        }
-    }
-
-    if (event.player.world.getBiome(event.player.getPosition3f()).name == "Abyssal Rift") {
-
-        if (!isNull(event.player.getRidingEntity())) {
-
-            event.player.addPotionEffect(<potion:potioncore:lightning>.makePotionEffect(1, 0));
-            event.player.removePassengers();
-            event.player.dismountRidingEntity();
-
-        }
-    }
+	else {
+		event.player.setNBT({lightning_cooldown_abyssal: 0});
+	}
 
 
     if(isNull(event.player.nbt.ForgeData.SkippedSilverDebuffs)){
