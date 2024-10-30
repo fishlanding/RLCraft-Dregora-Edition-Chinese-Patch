@@ -79,21 +79,12 @@ events.onEntityJoinWorld(function(event as EntityJoinWorldEvent){
     if (event.entity instanceof IEntityLivingBase) {
 
         var EntityBase as IEntityLivingBase = event.entity;
-        //overworld
 
         if (event.world.dimension == 0) {
-
-            // Increase Health for mod_lavacow entities
 
             if (isNull(EntityBase)) {return;}
             if (isNull(EntityBase.definition)) {return;}
             if (isNull(EntityBase.definition.id)) {return;}
-
-            if (EntityBase.definition.id has "mod_lavacow") {
-
-                EntityBase.getAttribute("generic.maxHealth").applyModifier(AttributeModifier.createModifier("DregoraHealth", 0.5, 1));
-                //EntityBase.health = EntityBase.health * 1.5;
-            }
 
             // Lower health of parasites in cities
             if (EntityBase.definition.id has "srparasites") {
@@ -105,7 +96,7 @@ events.onEntityJoinWorld(function(event as EntityJoinWorldEvent){
 
                         //HealthMultiply 0.5
                         EntityBase.getAttribute("generic.maxHealth").applyModifier(AttributeModifier.createModifier("DregoraHealth", -0.5, 1));
-                        //EntityBase.health = EntityBase.health * 0.5;
+                        //EntityBase.health = EntityBase.maxHealth;
 
                     }
                 }
@@ -126,7 +117,7 @@ events.onEntityLivingDamage(function(event as EntityLivingDamageEvent){
     if ((event.damageSource.trueSource.definition.id) == "srparasites:succor") {
 
         //DMGmultiply 0.03
-        event.amount = event.amount / 0.03;
+        event.amount = event.amount * 0.03;
 
     }
 
@@ -139,7 +130,7 @@ events.onEntityLivingDamage(function(event as EntityLivingDamageEvent){
                 if !(event.damageSource.trueSource.definition.id == "srparasites:succor") && (event.damageSource.trueSource.definition.id has "srparasites") {
 
                     //DMGMultiply 0.25
-                    event.amount = event.amount / 0.25;
+                    event.amount = event.amount * 0.25;
                 }
             }
         }
@@ -149,6 +140,8 @@ events.onEntityLivingDamage(function(event as EntityLivingDamageEvent){
 
 // Berries nerf
 events.onEntityLivingUseItemFinish(function(event as Finish){
+
+    if event.player.world.isRemote() {return;}
 
     if (event.item.definition.id == "biomesoplenty:berries") {
 
@@ -267,12 +260,9 @@ events.onPlayerRightClickItem(function(event as PlayerRightClickItemEvent){
                 }
             }
         } else if ((event.item.definition.id == "bountifulbaubles:magicmirror") || (event.item.definition.id == "bountifulbaubles:wormholemirror")) {
-            if (event.player.y <= 70) {
-
                 event.player.sendStatusMessage("你感觉到一股神秘的力量从下方袭来，猛地将镜子从你手中夺走", true);
                 event.player.dropItem(true);
                 event.cancel();
-            }
         }
     }
 
@@ -398,8 +388,8 @@ events.onEntityLivingDamage(function(event as EntityLivingDamageEvent){
 
         var entityShooter as IEntityLivingBase = event.damageSource.getTrueSource();
         var randomInt = entityShooter.world.random.nextFloat(0, 100);
-        var randomArrow = entityShooter.world.random.nextFloat(0, 66);
-        var randomArrowLong = entityShooter.world.random.nextFloat(0, 22);
+        var randomArrow = entityShooter.world.random.nextFloat(0, 65);
+        var randomArrowLong = entityShooter.world.random.nextFloat(0, 15);
         var RandomArrowScript = ArrowArray[randomArrow];
         var RandomArrowScriptLong = ArrowArrayLong[randomArrowLong];
 
@@ -407,7 +397,7 @@ events.onEntityLivingDamage(function(event as EntityLivingDamageEvent){
 
             if (randomInt <= 20) {
 
-                if (randomInt <= 20) {
+                if (randomInt <= 1) {
 
                     entityShooter.setItemToSlot(crafttweaker.entity.IEntityEquipmentSlot.offhand(), RandomArrowScriptLong);
 
@@ -555,6 +545,7 @@ events.onEntityLivingDeath(function(event as EntityLivingDeathEvent){
     var HeldArmor = event.damageSource.getTrueSource().armorInventory;
 
     if (isNull(HeldArmor)) {return;}
+    if (HeldArmor.length == 0) {return;}
 
     var armorpieces = 0;
 
@@ -563,13 +554,13 @@ events.onEntityLivingDeath(function(event as EntityLivingDeathEvent){
     if (!isNull(HeldArmor[2])) {if (HeldArmor[2].name == "item.srparasites.armor_chest") {armorpieces += 1;}}
     if (!isNull(HeldArmor[3])) {if (HeldArmor[3].name == "item.srparasites.armor_helm") {armorpieces += 1;}}
 
-    if (isNull(event.damageSource.getTrueSource().heldEquipment)) {
-        if (isNull(event.damageSource.getTrueSource().heldEquipment[0])) {
+    if (!isNull(event.damageSource.getTrueSource().heldEquipment)) {
+        if (!isNull(event.damageSource.getTrueSource().heldEquipment[0])) {
             if (event.damageSource.getTrueSource().heldEquipment[0].name has "srparasites") {
                 armorpieces += 1;
             }
         }
-        if (isNull(event.damageSource.getTrueSource().heldEquipment[1])) {
+        if (!isNull(event.damageSource.getTrueSource().heldEquipment[1])) {
             if (event.damageSource.getTrueSource().heldEquipment[1].name has "srparasites") {
                 armorpieces += 1;
             }
@@ -1239,16 +1230,17 @@ events.onEntityLivingUseItemFinish(function(event as Finish){
       }
 });
 
-events.onEntityLivingUpdate(function(event as EntityLivingUpdateEvent){
+events.onEntityJoinWorld(function(event as EntityJoinWorldEvent){
 
     if (event.entity.world.isRemote()) { return; }
-    if (event.entity.world.time % 10 != 0) { return; }
-    if (isNull(event.entity.definition)) { return; }
-    if (isNull(event.entity.definition.id)) { return; }
-    if ((event.entity.definition.id) != "minecraft:villager") { return; }
-    if(!isNull(event.entity.nbt.ForgeData.SussyBerianNaming)) { return; }
 
-    if((event.entity.customName == "") && (event.entity.nbt.Profession == 1)) {
+    var definition = event.entity.definition;
+    if (isNull(definition)) { return; }
+    if ((definition.id) != "minecraft:villager") { return; }
+    if (event.entity.customName != "") { return; }
+
+    var nbt = event.entity.nbt;
+    if (nbt.Profession == 1 && isNull(nbt.ForgeData.SussyBerianNaming)) {
         event.entity.setNBT({SussyBerianNaming: 1});
         var RandomNum = event.entity.world.random.nextFloat(0, 100);
         
@@ -1260,10 +1252,6 @@ events.onEntityLivingUpdate(function(event as EntityLivingUpdateEvent){
                 event.entity.setCustomName("Mentalberian");
             }
         }
-    } else if((event.entity.customName == "Mentalberian") && (event.entity.nbt.Profession == 1)) {
-        event.entity.setNBT({SussyBerianNaming: 1});
-    } else if((event.entity.customName == "Surryberian") && (event.entity.nbt.Profession == 1)) {
-        event.entity.setNBT({SussyBerianNaming: 1});
     }
 });
 
@@ -1658,6 +1646,24 @@ events.onPlayerTick(function(event as PlayerTickEvent){
 
 });
 
+events.onEntityMount(function(event as EntityMountEvent){
+
+    if !(event.isMounting) {return;}
+    if event.mountingEntity.world.isRemote() {return;}
+    if (!(event.mountingEntity instanceof IPlayer)) {return;}
+
+    var MountingPlayer as IPlayer = event.mountingEntity;
+
+    if (MountingPlayer.world.getBiome(MountingPlayer.getPosition3f()).name == "Abyssal Rift") {
+
+        MountingPlayer.sendStatusMessage("It seems something has your mount spooked, and will not cooporate.", true);
+        event.cancel();
+
+    }
+
+});
+
+
 //Listener for player on mount in Abyssal Rift
 //Listener for player in SRP deadblood / BOP Hot Spring Water / Bauble listener / Teleportation on hit by skeleton with Teleport arrow
 events.onPlayerTick(function(event as PlayerTickEvent){
@@ -1695,99 +1701,17 @@ events.onPlayerTick(function(event as PlayerTickEvent){
                 event.player.addPotionEffect(<potion:potioncore:lightning>.makePotionEffect(1, 0));
 
             }
+
+        } else {
+
+            event.player.setNBT({lightning_cooldown_abyssal: 0});
+
         }
-		else {
-			event.player.setNBT({lightning_cooldown_abyssal: 0});
-		}
-    }
-	else {
-		event.player.setNBT({lightning_cooldown_abyssal: 0});
-	}
 
+    } else {
 
-    if(isNull(event.player.nbt.ForgeData.SkippedSilverDebuffs)){
+        event.player.setNBT({lightning_cooldown_abyssal: 0});
 
-        event.player.setNBT({SkippedSilverDebuffs: 0});
-
-    }
-
-    if(isNull(event.player.nbt.ForgeData.SilverSicknessCooldown)){
-        event.player.setNBT({SilverSicknessCooldown: event.player.world.getWorldTime()});
-    }
-
-    if (!isNull(event.entity.armorInventory[0])) && (!isNull(event.entity.armorInventory[1])) && (!isNull(event.entity.armorInventory[2])) && (!isNull(event.entity.armorInventory[3])) {
-
-
-        if ((event.entity.armorInventory[0].name == "item.iceandfire.silver_boots") && (event.entity.armorInventory[1].name == "item.iceandfire.silver_leggings") && (event.entity.armorInventory[2].name == "item.iceandfire.silver_chestplate") && (event.entity.armorInventory[3].name == "item.iceandfire.silver_helmet")){
-
-
-            if (((event.player.isBaubleEquipped(<bountifulbaubles:shieldankh>)) != -1) || ((event.player.isBaubleEquipped(<bountifulbaubles:trinketankhcharm>)) != -1)) {return;}
-
-            for p in event.player.activePotionEffects {
-                if (p.duration <= 0){
-                    event.player.removePotionEffect(p.potion);
-                }
-            }
-
-            if !(event.player.world.getWorldTime() > event.player.nbt.ForgeData.SilverSicknessCooldown){return;}
-
-            var currentTime = event.player.world.getWorldTime() + event.entity.world.random.nextFloat(1200, 3600);
-            var RandomInt = event.entity.world.random.nextFloat(0, 100);
-            event.player.setNBT({SilverSicknessCooldown: currentTime});
-
-            if RandomInt <= 15 {
-
-                if (event.player.nbt.ForgeData.SkippedSilverDebuffs == 0) {
-
-                    event.player.addPotionEffect(<potion:potioncore:potion_sickness>.makePotionEffect(200, 0));
-                    event.player.setNBT({SkippedSilverDebuffs: 0});
-
-                } else if (event.player.nbt.ForgeData.SkippedSilverDebuffs == 1) {
-
-                    event.player.addPotionEffect(<potion:potioncore:potion_sickness>.makePotionEffect(300, 0));
-                    event.player.setNBT({SkippedSilverDebuffs: 0});
-
-                } else if (event.player.nbt.ForgeData.SkippedSilverDebuffs == 2) {
-
-                    event.player.addPotionEffect(<potion:potioncore:potion_sickness>.makePotionEffect(400, 0));
-                    event.player.setNBT({SkippedSilverDebuffs: 0});
-
-                } else if (event.player.nbt.ForgeData.SkippedSilverDebuffs == 3) {
-
-                    event.player.addPotionEffect(<potion:potioncore:potion_sickness>.makePotionEffect(500, 0));
-                    event.player.setNBT({SkippedSilverDebuffs: 0});
-
-                } else if (event.player.nbt.ForgeData.SkippedSilverDebuffs == 4) {
-
-                    event.player.addPotionEffect(<potion:potioncore:potion_sickness>.makePotionEffect(200, 1));
-                    event.player.setNBT({SkippedSilverDebuffs: 0});
-
-                } else if (event.player.nbt.ForgeData.SkippedSilverDebuffs == 5) {
-
-                    event.player.addPotionEffect(<potion:potioncore:potion_sickness>.makePotionEffect(400, 1));
-                    event.player.setNBT({SkippedSilverDebuffs: 0});
-
-                } else if (event.player.nbt.ForgeData.SkippedSilverDebuffs == 6) {
-
-                    event.player.addPotionEffect(<potion:potioncore:potion_sickness>.makePotionEffect(400, 2));
-                    event.player.setNBT({SkippedSilverDebuffs: 0});
-
-                } else if (event.player.nbt.ForgeData.SkippedSilverDebuffs == 7) {
-
-                    event.player.addPotionEffect(<potion:potioncore:potion_sickness>.makePotionEffect(600, 3));
-                    event.player.setNBT({SkippedSilverDebuffs: 0});
-                }
-
-            } else if (event.player.nbt.ForgeData.SkippedSilverDebuffs == 7) {
-
-                event.player.addPotionEffect(<potion:potioncore:potion_sickness>.makePotionEffect(900, 3));
-                event.player.setNBT({SkippedSilverDebuffs: 0});
-
-            } else {
-                var addSkip = event.player.nbt.ForgeData.SkippedSilverDebuffs + 1;
-                event.player.setNBT({SkippedSilverDebuffs: addSkip});
-            }
-        }
     }
 
     if (event.phase == "START") {

@@ -15,9 +15,20 @@ recipes.addShaped("dregora53",<biomesoplenty:gem_block:1>,
   [<biomesoplenty:gem:1>,<biomesoplenty:gem:1>,<biomesoplenty:gem:1>]]);
 
 <variedcommodities:satchel>.displayName = "钱包";
-<mod_lavacow:dreamcatcher>.addTooltip("§6A 装满古币的钱包!");
-recipes.addShapeless("dregora51",<variedcommodities:satchel>,[<variedcommodities:coin_gold> * 64]);
-recipes.addShapeless("dregora52",<variedcommodities:coin_gold> * 64,[<variedcommodities:satchel>]);
+<variedcommodities:satchel>.addTooltip("§6装满古币的钱包!");
+
+recipes.addShaped("dregora54",<variedcommodities:satchel>,
+ [[<minecraft:leather>,<contenttweaker:coin_pile>,<minecraft:leather>],
+  [<contenttweaker:coin_pile>,<contenttweaker:coin_pile>,<contenttweaker:coin_pile>],
+  [<contenttweaker:coin_pile>,<contenttweaker:coin_pile>,<contenttweaker:coin_pile>]]);
+
+recipes.addShaped("dregora51",<contenttweaker:coin_pile>,
+ [[<variedcommodities:coin_gold>,<variedcommodities:coin_gold>,<variedcommodities:coin_gold>],
+  [<variedcommodities:coin_gold>,<variedcommodities:coin_gold>,<variedcommodities:coin_gold>],
+  [<variedcommodities:coin_gold>,<variedcommodities:coin_gold>,<variedcommodities:coin_gold>]]);
+
+recipes.addShapeless("dregora52",<variedcommodities:coin_gold> * 63,[<variedcommodities:satchel>]);
+recipes.addShapeless("dregora55",<variedcommodities:coin_gold> * 9,[<contenttweaker:coin_pile>]);
 
 // Remove Bread recipe
 recipes.removeByRecipeName("minecraft:bread");
@@ -25,10 +36,9 @@ recipes.removeByRecipeName("minecraft:bread");
 // Remove Enchantment table & add wither skulls to it:
 recipes.remove(<minecraft:enchanting_table>);
 
-
 // Re-add Enchantment table
 recipes.addShaped("dregora24",<minecraft:enchanting_table>,
- [[null,<minecraft:book>,null],
+ [[null,<minecraft:writable_book>,null],
   [<minecraft:diamond>,<minecraft:skull:1>,<minecraft:diamond>],
   [<minecraft:obsidian>,<minecraft:obsidian>,<minecraft:obsidian>]]);
 
@@ -239,7 +249,7 @@ recipes.remove(<mod_lavacow:weta_hoe>);
 <mod_lavacow:acidicheart>.displayName = "酸性奥斯维尔米斯/木乃伊之心";
 <mod_lavacow:feather_black>.displayName = "黑鸦/食尸鬼羽毛";
 <mod_lavacow:burntovipositor>.displayName = "烧焦的蝾螈产卵管";
-<mod_lavacow:burntovipositor>.displayName = "恶臭雾妖/伊萨夸鬃毛";
+<mod_lavacow:foul_bristle>.displayName = "恶臭雾妖/伊萨夸鬃毛";
 <mod_lavacow:hyphae>.displayName = "真菌菌丝";
 <mod_lavacow:kings_crown>.addTooltip("真沙漠的宝藏");
 <mod_lavacow:hatred_shard>.addTooltip("一位国王的记忆，以及所有为他而死的人。");
@@ -465,7 +475,8 @@ recipes.addShaped("dregora46",<mod_lavacow:ghostjelly>,
 <variedcommodities:gem_ruby>.addTooltip(format.gold("从融合巫师的残骸中提取。"));
 
 // Give the Orb for Eta barrier a better name.
-<variedcommodities:gem_ruby>.displayName = "残酷宝珠";
+<variedcommodities:orb:0>.clearTooltip(true);
+<variedcommodities:orb:>.displayName = "残酷宝珠";
 <variedcommodities:orb:0>.addTooltip(format.darkGray("variedcommodities:orb"));
 <variedcommodities:orb:0>.addTooltip(format.green("在这个宝珠中存在着一种类似于闪电的强大力量。"));
 <variedcommodities:orb:0>.addTooltip(format.gold("只能从残酷塔楼最深处获得。"));
@@ -495,18 +506,17 @@ recipes.addShaped("dregora32",<variedcommodities:ancient_coin>,
 <variedcommodities:orb:5>.clearTooltip(true);
 <variedcommodities:orb:6>.clearTooltip(true);
 
-
-<variedcommodities:gem_ruby>.displayName = "残酷宝珠";
+<variedcommodities:orb:1>.displayName = "残酷宝珠";
 <variedcommodities:orb:1>.addTooltip(format.darkGray("variedcommodities:orb"));
 <variedcommodities:orb:1>.addTooltip(format.green("通过这个宝珠你可以看到痛苦和火焰。"));
 <variedcommodities:orb:1>.addTooltip(format.gold("可以从哨站的残酷商人那里获得。"));
 
-<variedcommodities:gem_ruby>.displayName = "残酷宝珠";
+<variedcommodities:orb:5>.displayName = "残酷宝珠";
 <variedcommodities:orb:5>.addTooltip(format.darkGray("variedcommodities:orb"));
 <variedcommodities:orb:5>.addTooltip(format.green("来历不明,也许是外星人的宝珠。"));
 <variedcommodities:orb:5>.addTooltip(format.gold("可以从哨站的残酷商人那里获得。"));
 
-<variedcommodities:gem_ruby>.displayName = "暗影宝珠";
+<variedcommodities:orb:6>.displayName = "暗影宝珠";
 <variedcommodities:orb:6>.addTooltip(format.darkGray("variedcommodities:orb"));
 <variedcommodities:orb:6>.addTooltip(format.green("一股黑暗的雾气笼罩在宝珠之中。"));
 <variedcommodities:orb:6>.addTooltip(format.gold("可以从哨站的残酷商人那里获得。"));

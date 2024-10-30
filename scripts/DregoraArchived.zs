@@ -10,6 +10,93 @@
 
 /*
 
+
+//silver has issue: - Dregora.zs Only checks bauble slots while setbonus mod will include mainhand and offhand
+    if(isNull(event.player.nbt.ForgeData.SkippedSilverDebuffs)){
+
+        event.player.setNBT({SkippedSilverDebuffs: 0});
+
+    }
+
+    if(isNull(event.player.nbt.ForgeData.SilverSicknessCooldown)){
+        event.player.setNBT({SilverSicknessCooldown: event.player.world.getWorldTime()});
+    }
+
+    if (!isNull(event.entity.armorInventory[0])) && (!isNull(event.entity.armorInventory[1])) && (!isNull(event.entity.armorInventory[2])) && (!isNull(event.entity.armorInventory[3])) {
+
+
+        if ((event.entity.armorInventory[0].name == "item.iceandfire.silver_boots") && (event.entity.armorInventory[1].name == "item.iceandfire.silver_leggings") && (event.entity.armorInventory[2].name == "item.iceandfire.silver_chestplate") && (event.entity.armorInventory[3].name == "item.iceandfire.silver_helmet")){
+
+
+            if (((event.player.isBaubleEquipped(<bountifulbaubles:shieldankh>)) != -1) || ((event.player.isBaubleEquipped(<bountifulbaubles:trinketankhcharm>)) != -1)) {return;}
+
+            for p in event.player.activePotionEffects {
+                if (p.duration <= 0){
+                    event.player.removePotionEffect(p.potion);
+                }
+            }
+
+            if !(event.player.world.getWorldTime() > event.player.nbt.ForgeData.SilverSicknessCooldown){return;}
+
+            var currentTime = event.player.world.getWorldTime() + event.entity.world.random.nextFloat(1200, 3600);
+            var RandomInt = event.entity.world.random.nextFloat(0, 100);
+            event.player.setNBT({SilverSicknessCooldown: currentTime});
+
+            if RandomInt <= 15 {
+
+                if (event.player.nbt.ForgeData.SkippedSilverDebuffs == 0) {
+
+                    event.player.addPotionEffect(<potion:potioncore:potion_sickness>.makePotionEffect(200, 0));
+                    event.player.setNBT({SkippedSilverDebuffs: 0});
+
+                } else if (event.player.nbt.ForgeData.SkippedSilverDebuffs == 1) {
+
+                    event.player.addPotionEffect(<potion:potioncore:potion_sickness>.makePotionEffect(300, 0));
+                    event.player.setNBT({SkippedSilverDebuffs: 0});
+
+                } else if (event.player.nbt.ForgeData.SkippedSilverDebuffs == 2) {
+
+                    event.player.addPotionEffect(<potion:potioncore:potion_sickness>.makePotionEffect(400, 0));
+                    event.player.setNBT({SkippedSilverDebuffs: 0});
+
+                } else if (event.player.nbt.ForgeData.SkippedSilverDebuffs == 3) {
+
+                    event.player.addPotionEffect(<potion:potioncore:potion_sickness>.makePotionEffect(500, 0));
+                    event.player.setNBT({SkippedSilverDebuffs: 0});
+
+                } else if (event.player.nbt.ForgeData.SkippedSilverDebuffs == 4) {
+
+                    event.player.addPotionEffect(<potion:potioncore:potion_sickness>.makePotionEffect(200, 1));
+                    event.player.setNBT({SkippedSilverDebuffs: 0});
+
+                } else if (event.player.nbt.ForgeData.SkippedSilverDebuffs == 5) {
+
+                    event.player.addPotionEffect(<potion:potioncore:potion_sickness>.makePotionEffect(400, 1));
+                    event.player.setNBT({SkippedSilverDebuffs: 0});
+
+                } else if (event.player.nbt.ForgeData.SkippedSilverDebuffs == 6) {
+
+                    event.player.addPotionEffect(<potion:potioncore:potion_sickness>.makePotionEffect(400, 2));
+                    event.player.setNBT({SkippedSilverDebuffs: 0});
+
+                } else if (event.player.nbt.ForgeData.SkippedSilverDebuffs == 7) {
+
+                    event.player.addPotionEffect(<potion:potioncore:potion_sickness>.makePotionEffect(600, 3));
+                    event.player.setNBT({SkippedSilverDebuffs: 0});
+                }
+
+            } else if (event.player.nbt.ForgeData.SkippedSilverDebuffs == 7) {
+
+                event.player.addPotionEffect(<potion:potioncore:potion_sickness>.makePotionEffect(900, 3));
+                event.player.setNBT({SkippedSilverDebuffs: 0});
+
+            } else {
+                var addSkip = event.player.nbt.ForgeData.SkippedSilverDebuffs + 1;
+                event.player.setNBT({SkippedSilverDebuffs: addSkip});
+            }
+        }
+    }
+
 //Function containing potion effects for sleeping_nightmare
 function addPotionEffectSleeping(player as IPlayer, effectLevel as int){
 

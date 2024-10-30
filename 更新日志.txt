@@ -10,3 +10,11 @@
 
 =====1.0.1a=====
 1.RLMixins chat 汉化(config/rlmixins/dsurround_chat.cfg)
+
+=====1.0.2=====
+1.脚本汉化更新
+2.contenttweaker 汉化更新
+
+
+Todo List:
+1.OTG 配置汉化
