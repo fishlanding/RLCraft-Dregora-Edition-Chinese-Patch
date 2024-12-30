@@ -476,7 +476,7 @@ recipes.addShaped("dregora46",<mod_lavacow:ghostjelly>,
 
 // Give the Orb for Eta barrier a better name.
 <variedcommodities:orb:0>.clearTooltip(true);
-<variedcommodities:orb:>.displayName = "残酷宝珠";
+<variedcommodities:orb:0>.displayName = "残酷宝珠";
 <variedcommodities:orb:0>.addTooltip(format.darkGray("variedcommodities:orb"));
 <variedcommodities:orb:0>.addTooltip(format.green("在这个宝珠中存在着一种类似于闪电的强大力量。"));
 <variedcommodities:orb:0>.addTooltip(format.gold("只能从残酷塔楼最深处获得。"));

@@ -92,7 +92,7 @@ events.onEntityJoinWorld(function(event as EntityJoinWorldEvent){
                 var BiomeName = event.world.getBiome(EntityBase.getPosition3f()).name;
                 for Biome in ParasiteBuffBiomes {
 
-                    if (BiomeName == Biome) {
+                    if (BiomeName != Biome) {
 
                         //HealthMultiply 0.5
                         EntityBase.getAttribute("generic.maxHealth").applyModifier(AttributeModifier.createModifier("DregoraHealth", -0.5, 1));
@@ -113,24 +113,31 @@ events.onEntityLivingDamage(function(event as EntityLivingDamageEvent){
     if (isNull(event.damageSource.trueSource.definition)) {return;}
     if (isNull(event.damageSource.trueSource.definition.id)) {return;}
 
-    // nerf succors
-    if (((event.damageSource.trueSource.definition.id) == "srparasites:bogle") || ((event.damageSource.trueSource.definition.id) == "srparasites:succor")) {
-
-        //DMGmultiply 0.05
-        event.amount = event.amount * 0.05;
-
-    }
-
     if event.damageSource.trueSource.world.dimension == 0 {
 
         // Lower health of parasites in cities
         var BiomeName = event.damageSource.trueSource.world.getBiome(event.entity.getPosition3f()).name;
         for Biome in ParasiteBuffBiomes {
-            if (BiomeName == Biome) {
+            if (BiomeName != Biome) {
                 if !(event.damageSource.trueSource.definition.id == "srparasites:succor") && (event.damageSource.trueSource.definition.id has "srparasites") {
 
                     //DMGMultiply 0.25
                     event.amount = event.amount * 0.25;
+                }
+            }
+        }
+    }
+
+    if event.damageSource.trueSource.world.dimension == 3 {
+
+        // Lower DMG of parasites in underneath dimension
+        var BiomeName = event.damageSource.trueSource.world.getBiome(event.entity.getPosition3f()).name;
+        for Biome in ParasiteBuffBiomes {
+            if (BiomeName == Biome) {
+                if !(event.damageSource.trueSource.definition.id == "srparasites:succor") && (event.damageSource.trueSource.definition.id has "srparasites") {
+
+                    //DMGMultiply 0.8
+                    event.amount = event.amount * 0.8;
                 }
             }
         }
@@ -141,7 +148,7 @@ events.onEntityLivingDamage(function(event as EntityLivingDamageEvent){
 // Berries nerf
 events.onEntityLivingUseItemFinish(function(event as Finish){
 
-    if event.player.world.isRemote() {return;}
+    if event.entity.world.isRemote() {return;}
 
     if (event.item.definition.id == "biomesoplenty:berries") {
 
@@ -209,7 +216,7 @@ events.onEntityLivingDamage(function(event as EntityLivingDamageEvent){
 
                 }
             }
-			
+
 			if (isNull(event.damageSource.trueSource)) {return;}
 			if (!(event.damageSource.trueSource instanceof IEntityLivingBase)) {return;}
 			var player as IEntityLivingBase = event.damageSource.trueSource;
@@ -231,7 +238,7 @@ events.onEntityLivingDamage(function(event as EntityLivingDamageEvent){
 					player.attackEntityFrom(MAGIC, player.health * 0.9 );
 					event.cancel();
 
-				} 
+				}
 				else {
 					player.attackEntityFrom(MAGIC, event.amount);
 					event.cancel();
@@ -288,10 +295,10 @@ events.onPlayerRightClickItem(function(event as PlayerRightClickItemEvent){
 
                 if (event.player.heldEquipment[0].definition.id == "mod_lavacow:kings_crown") {
 
-            event.player.heldEquipment[0].mutable().shrink(1);
-            val skeleton_king = <entity:mod_lavacow:skeletonking>.createEntity(event.player.world) as IEntity;
-            skeleton_king.setPosition(SpawnPos);
-            event.world.spawnEntity(skeleton_king);
+                    event.player.heldEquipment[0].mutable().shrink(1);
+                    val skeleton_king = <entity:mod_lavacow:skeletonking>.createEntity(event.player.world) as IEntity;
+                    skeleton_king.setPosition(SpawnPos);
+                    event.world.spawnEntity(skeleton_king);
 
                 }
 
@@ -494,7 +501,7 @@ events.onPlayerInteractEntity(function(event as PlayerInteractEntityEvent){
     }
 
     if ((event.target.customName == "Mentalberian") && (event.target.definition.id == "minecraft:villager")) {
-		
+
 		if !event.entity.world.isRemote() {
 			var randomPotion = event.target.world.random.nextFloat(0, 13);
 			var RandomMentalPotion = MentalPotions[randomPotion];
@@ -1009,6 +1016,16 @@ events.onEntityLivingDamage(function(event as EntityLivingDamageEvent){
         }
     }
 
+    if (event.damageSource.getDamageType() == "LIGHTNING_BOLT") {
+        if (event.entity.isRiding) {
+            if ((event.amount) > 0) {
+
+                event.entity.dismountRidingEntity();
+                event.entity.removePassengers();
+            }
+        }
+    }
+
     if (!isNull(event.damageSource.getTrueSource())){
         if(!isNull(event.damageSource.getTrueSource().getCustomName())){
             if((event.damageSource.getTrueSource().getCustomName() has "Dismounter") || (event.damageSource.getTrueSource().getCustomName() has "Dismounting")) {
@@ -1036,14 +1053,14 @@ events.onEntityLivingDamage(function(event as EntityLivingDamageEvent){
             }
         }
     }
-    
+
     var EntityBiome = event.entity.world.getBiome(event.entity.getPosition3f()).name;
 
     if (isNull(event.entity)){return;}
     if (isNull(event.entity.definition)){return;}
     if (isNull(event.entity.definition.id)){return;}
     if ((EntityBiome) == "Abyssal Rift") {
-        
+
         //Damage cap set at 100 per hit on abyssal rift bosses
         if (event.amount >= 100) {
             if (!isNull(event.entity.nbt.SpawnedAsBoss)) {
@@ -1052,13 +1069,15 @@ events.onEntityLivingDamage(function(event as EntityLivingDamageEvent){
                 }
             }
         }
-        
+
         if ((event.entity.definition.id) == "playerbosses:player_boss"){
 
             var Phase03 = event.entityLivingBase.maxHealth /4;
             var Phase02 = event.entityLivingBase.maxHealth /2;
 
             if ((Phase02 >= event.entityLivingBase.health) && (Phase03 <= event.entityLivingBase.health)){
+
+                event.amount = event.amount * 0.75;
 
                 var buglin = <entity:srparasites:buglin>.createEntity(event.entityLivingBase.world);
                 var adventurerhead = <entity:srparasites:sim_adventurerhead>.createEntity(event.entityLivingBase.world);
@@ -1114,6 +1133,8 @@ events.onEntityLivingDamage(function(event as EntityLivingDamageEvent){
             }
 
             if (Phase03 >= event.entityLivingBase.health){
+
+                event.amount = event.amount * 0.25;
 
                 var villager = <entity:srparasites:sim_villager>.createEntity(event.entityLivingBase.world);
                 var human = <entity:srparasites:sim_human>.createEntity(event.entityLivingBase.world);
@@ -1236,20 +1257,21 @@ events.onEntityJoinWorld(function(event as EntityJoinWorldEvent){
 
     var definition = event.entity.definition;
     if (isNull(definition)) { return; }
-    if ((definition.id) != "minecraft:villager") { return; }
-    if (event.entity.customName != "") { return; }
 
-    var nbt = event.entity.nbt;
-    if (nbt.Profession == 1 && isNull(nbt.ForgeData.SussyBerianNaming)) {
-        event.entity.setNBT({SussyBerianNaming: 1});
-        var RandomNum = event.entity.world.random.nextFloat(0, 100);
-        
-        if RandomNum <= 10 {
-            
-            if RandomNum <= 7 {
-                event.entity.setCustomName("Sussyberian");
-            } else {
-                event.entity.setCustomName("Mentalberian");
+    var EntityBiome = (event.entity.world.getBiome(event.entity.getPosition3f()).name);
+    // Deep Ocean & Ocean
+
+    //SRP squids spawning
+    if ((EntityBiome has "Ocean") || (EntityBiome has "Sea")) {
+        if ((definition.id) == "minecraft:squid") {
+
+            var RandomNum = event.entity.world.random.nextFloat(0, 100);
+            if RandomNum <= 3 {
+
+                val parasite_squid = <entity:srparasites:sim_squid>.createEntity(event.entity.world) as IEntity;
+                parasite_squid.setPosition(event.entity.position);
+                event.world.spawnEntity(parasite_squid);
+                event.cancel();
             }
         }
     }
@@ -1262,7 +1284,7 @@ events.onEntityLivingUpdate(function(event as EntityLivingUpdateEvent){
 
     if (!isNull(event.entity.definition)) {
         if (!isNull(event.entity.definition.name)) {
-            if ((event.entity.definition.name) has "srparasites") {
+            if (((event.entity.definition.name) has "srparasites") && ((event.entity.definition.name) != "srparasites.sim_squid")) {
 
                 if ((event.entity.world.getDimension()) == 0) || ((event.entity.world.getDimension()) == 3) {
 
@@ -1327,6 +1349,7 @@ events.onEntityLivingUpdate(function(event as EntityLivingUpdateEvent){
     }
 });
 
+
 // SRParasites in overworld Cancel Spawns if not in Whitelisted Biome and From spawner
 events.onCheckSpawn(function(event as EntityLivingExtendedSpawnEvent){
 
@@ -1377,7 +1400,9 @@ events.onEntityLivingDeathDrops(function(event as EntityLivingDeathDropsEvent){
                                 if i.item.definition.id == "minecraft:enchanted_book" {
 
                                     var RandomInt = event.entity.world.random.nextFloat(0, 100);
-                                    if RandomInt <= 50 { event.addItem(i); } else { event.addItem(<biomesoplenty:ash>.withTag({display: {Name: "Infernal Ashes"}})); }
+                                    if RandomInt <= 30 { event.addItem(i); }
+
+                                    // else { event.addItem(<biomesoplenty:ash>.withTag({display: {Name: "Infernal Ashes"}})); }
 
                                 } else {
 
@@ -1515,6 +1540,7 @@ for item in conductivity_3 {item.addTooltip("§e§o导电性 +3");}
 for item in conductivity_4 {item.addTooltip("§e§o导电性 +4");}
 for item in conductivity_5 {item.addTooltip("§e§o导电性 +5");}
 for item in conductivity_10 {item.addTooltip("§e§o导电性 +10");}
+for item in conductivity_100 {item.addTooltip("§e§o导电性 +100");}
 
 
 
@@ -1524,11 +1550,12 @@ events.onPlayerTick(function(event as PlayerTickEvent){
     if (event.player.world.time % 100 != 0) {return;}
 
     // Only Thunder
+    //todo: make this a skylight function so that it doesn't trigger when under glass.
     if ((event.player.world.isRaining()) && ((event.player.world.getBrightness(event.player.position)) == 15)) {
-		
+
 		var doShock = false;
 		var isThunder = false;
-		
+
 		if (event.player.world.getWorldInfo().isThundering()) {
 			doShock = true;
 			isThunder = true;
@@ -1539,12 +1566,12 @@ events.onPlayerTick(function(event as PlayerTickEvent){
 				doShock = true;
 			}
 		}
-		
+
 		if (!doShock) {
 			event.player.setNBT({lightning_warning: 0});
 			return;
 		}
-		
+
         // Assign conductivity rating for player
         var EquipmentList = event.player.equipmentAndArmor as IItemStack[];
         var silvercount as int = 0;
@@ -1573,7 +1600,7 @@ events.onPlayerTick(function(event as PlayerTickEvent){
                 }
             }
         }
-		
+
 		if (!isThunder) {
 			silvercount = silvercount / 2.0;
 		}
@@ -1582,9 +1609,9 @@ events.onPlayerTick(function(event as PlayerTickEvent){
         var RandomLightningMessage = RandomLightningMessageArray[RandomLightningInt];
 
         var warning = event.player.world.time + 60;
-		
+
 		var cooldown = event.player.world.time;
-		
+
 		if (!isThunder) {
 			cooldown += 1200;
 		}
@@ -1626,6 +1653,13 @@ events.onPlayerTick(function(event as PlayerTickEvent){
                 }
             }
 
+            else if silvercount == 0 {
+
+                event.player.setNBT({lightning_cooldown: cooldown});
+                event.player.setNBT({lightning_warning: 0});
+
+            }
+
             else if (event.player.world.time) > (event.player.nbt.ForgeData.lightning_warning)  {
 
                 // warning time cooldown is over, strike with lightning
@@ -1651,10 +1685,11 @@ events.onEntityMount(function(event as EntityMountEvent){
     if !(event.isMounting) {return;}
     if event.mountingEntity.world.isRemote() {return;}
     if (!(event.mountingEntity instanceof IPlayer)) {return;}
+    if (!(event.mountedEntity instanceof IEntityLivingBase)) {return;}
 
     var MountingPlayer as IPlayer = event.mountingEntity;
-
-    if (MountingPlayer.world.getBiome(MountingPlayer.getPosition3f()).name == "Abyssal Rift") {
+    var MountingBiome = MountingPlayer.world.getBiome(MountingPlayer.getPosition3f()).name;
+    if ((MountingBiome == "Abyssal Rift") || (MountingBiome == "Parasite Biome")) {
 
         MountingPlayer.sendStatusMessage("It seems something has your mount spooked, and will not cooporate.", true);
         event.cancel();
@@ -1670,10 +1705,13 @@ events.onPlayerTick(function(event as PlayerTickEvent){
 
     if event.player.world.isRemote() {return;}
     if (event.player.world.time % 20 != 0) {return;}
+    var entityBiome = event.player.world.getBiome(event.player.getPosition3f()).name;
 
-    if (event.player.world.getBiome(event.player.getPosition3f()).name == "Abyssal Rift") {
+    if ((entityBiome == "Abyssal Rift") || (entityBiome == "Parasite Biome")) {
 
         if (!isNull(event.player.getRidingEntity())) {
+
+            if (!(event.player.getRidingEntity() instanceof IEntityLivingBase)) {return;}
 
             var newtime = event.player.world.time + 100;
 
@@ -1712,7 +1750,7 @@ events.onPlayerTick(function(event as PlayerTickEvent){
 
         event.player.setNBT({lightning_cooldown_abyssal: 0});
 
-    }
+	  }
 
     if (event.phase == "START") {
 

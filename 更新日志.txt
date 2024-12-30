@@ -19,3 +19,8 @@
 1.脚本汉化更新
 2.套装效果汉化更新 (config\setbonus\1.12.2.009+.cfg)
 3.RLMixins chat 汉化更新(config/rlmixins/dsurround_chat.cfg)
+
+=====1.0.4=====
+1.脚本汉化更新
+2.死亡信息更新(resources\enhancedvisuals\lang\zh_cn.lang)
+3.chat 更新(config\rlmixins\dsurround_chat.cfg)
