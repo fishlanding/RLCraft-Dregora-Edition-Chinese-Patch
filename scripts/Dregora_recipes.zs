@@ -7,12 +7,17 @@ print("Dregora Recipe Script starting!");
 //=================================
 
 recipes.remove(<biomesoplenty:gem_block:1>);
-
 // Re-add Diomesoplenty ruby
 recipes.addShaped("dregora53",<biomesoplenty:gem_block:1>,
  [[<biomesoplenty:gem:1>,<biomesoplenty:gem:1>,<biomesoplenty:gem:1>],
   [<biomesoplenty:gem:1>,<biomesoplenty:gem:1>,<biomesoplenty:gem:1>],
   [<biomesoplenty:gem:1>,<biomesoplenty:gem:1>,<biomesoplenty:gem:1>]]);
+
+recipes.addShaped("saw_bookshelf",<minecraft:book>*3,
+[[<ore:toolSaw>,<ore:bookshelf>]]);
+
+
+<variedcommodities:mana>.addTooltip("§6A 用作魔杖古代动力源的宝贵资源");
 
 <variedcommodities:satchel>.displayName = "钱包";
 <variedcommodities:satchel>.addTooltip("§6装满古币的钱包!");
@@ -30,6 +35,28 @@ recipes.addShaped("dregora51",<contenttweaker:coin_pile>,
 recipes.addShapeless("dregora52",<variedcommodities:coin_gold> * 63,[<variedcommodities:satchel>]);
 recipes.addShapeless("dregora55",<variedcommodities:coin_gold> * 9,[<contenttweaker:coin_pile>]);
 
+// Removes recipe xp bug (level up)
+recipes.remove(<variedcommodities:wooden_dagger_reversed>);
+recipes.remove(<variedcommodities:stone_dagger_reversed>);
+recipes.remove(<variedcommodities:iron_dagger_reversed>);
+recipes.remove(<variedcommodities:golden_dagger_reversed>);
+recipes.remove(<variedcommodities:diamond_dagger_reversed>);
+recipes.remove(<variedcommodities:bronze_dagger_reversed>);
+recipes.remove(<variedcommodities:emerald_dagger_reversed>);
+recipes.remove(<variedcommodities:demonic_dagger_reversed>);
+recipes.remove(<variedcommodities:mithril_dagger_reversed>);
+recipes.remove(<variedcommodities:frost_dagger_reversed>);
+recipes.remove(<variedcommodities:wooden_dagger>);
+recipes.remove(<variedcommodities:stone_dagger>);
+recipes.remove(<variedcommodities:iron_dagger>);
+recipes.remove(<variedcommodities:golden_dagger>);
+recipes.remove(<variedcommodities:diamond_dagger>);
+recipes.remove(<variedcommodities:bronze_dagger>);
+recipes.remove(<variedcommodities:emerald_dagger>);
+recipes.remove(<variedcommodities:demonic_dagger>);
+recipes.remove(<variedcommodities:mithril_dagger>);
+recipes.remove(<variedcommodities:frost_dagger>);
+
 // Remove Bread recipe
 recipes.removeByRecipeName("minecraft:bread");
 
@@ -38,7 +65,7 @@ recipes.remove(<minecraft:enchanting_table>);
 
 // Re-add Enchantment table
 recipes.addShaped("dregora24",<minecraft:enchanting_table>,
- [[null,<minecraft:writable_book>,null],
+ [[null,<minecraft:writable_book:*>,null],
   [<minecraft:diamond>,<minecraft:skull:1>,<minecraft:diamond>],
   [<minecraft:obsidian>,<minecraft:obsidian>,<minecraft:obsidian>]]);
 
@@ -54,6 +81,9 @@ recipes.addShaped("dregora24",<minecraft:enchanting_table>,
 //=================================
 
 //Change blockhardness Blocks in relation to SRParasites
+var BarrierHard as IItemStack = <dimstack:bedrock>;
+BarrierHard.hardness = 30;
+
 var AshenStoneHard as IItemStack = <lycanitesmobs:ashenstone>;
 AshenStoneHard.hardness = 30;
 
@@ -89,9 +119,9 @@ BasaltHard.hardness = 50;
 //=================================
 
 // Add a recipe for the reinforced iron plates
-recipes.addShaped("dregora48",<contenttweaker:iron_plate_reinforced> * 8,
+recipes.addShaped("dregora48",<contenttweaker:iron_plate_reinforced>,
  [[<minecraft:iron_bars>,<minecraft:iron_bars>,<minecraft:iron_bars>],
-  [<minecraft:iron_bars>,<quark:iron_plate>*8,<minecraft:iron_bars>],
+  [<minecraft:iron_bars>,<quark:iron_plate>,<minecraft:iron_bars>],
   [<minecraft:iron_bars>,<minecraft:iron_bars>,<minecraft:iron_bars>]]);
 
 // Add a recipe for the reinforced rusty iron plates
@@ -430,21 +460,34 @@ recipes.addShaped("dregora46",<mod_lavacow:ghostjelly>,
 //Add New trading system items description & lore
 <variedcommodities:coin_stone>.displayName = "残酷碎片";
 <variedcommodities:coin_stone>.addTooltip(format.gold("在残酷塔楼中发现的残酷硬币碎片,可以修复"));
+
 <biomesoplenty:terrestrial_artifact>.addTooltip(format.gold("充满生命与纯净的本质,可以与大多数药师交易来制造生物群落净化器。"));
+
 <variedcommodities:coin_gold>.displayName = "古老的金币";
 <variedcommodities:coin_gold>.addTooltip(format.gold("在哨站和村民中被地理学家视为珍宝,通常在维修井和城市等古老建筑中发现。"));
+
 <variedcommodities:ancient_coin>.displayName = "残酷的金币";
 <variedcommodities:ancient_coin>.addTooltip(format.gold("最稀有的宝藏,在被灰雾包围的残酷塔楼中发现,可以与哨站的地理学家和大多数药师交易换取特殊物品,但很少在平原和花田的小屋中发现。"));
+
 <variedcommodities:lead_pipe>.displayName = "古老的神器";
 <variedcommodities:lead_pipe>.addTooltip(format.gold("在哨站被地理学家视为珍宝,通常在维修井和城市等古老建筑中发现。"));
+<variedcommodities:lead_pipe>.addTooltip(format.gold("只有在原始状态下才出售，每天用铁锭修复"));
+
 <variedcommodities:crowbar>.displayName = "古老的神器";
 <variedcommodities:crowbar>.addTooltip(format.gold("在哨站被地理学家视为珍宝,通常在维修井和城市等古老建筑中发现。"));
+<variedcommodities:crowbar>.addTooltip(format.gold("只有在原始状态下才出售，每天用铁锭修复"));
+
 <variedcommodities:hammer>.displayName = "古老的神器";
 <variedcommodities:hammer>.addTooltip(format.gold("在哨站被地理学家视为珍宝,通常在维修井和城市等古老建筑中发现。"));
+<variedcommodities:hammer>.addTooltip(format.gold("只有在原始状态下才出售，每天用铁锭修复"));
+
 <variedcommodities:wrench>.displayName = "古老的神器";
 <variedcommodities:wrench>.addTooltip(format.gold("在哨站被地理学家视为珍宝,通常在维修井和城市等古老建筑中发现。"));
+<variedcommodities:wrench>.addTooltip(format.gold("只有在原始状态下才出售，每天用铁锭修复"));
+
 <variedcommodities:pipe_wrench>.displayName = "古老的神器";
 <variedcommodities:pipe_wrench>.addTooltip(format.gold("在哨站被地理学家视为珍宝,通常在维修井和城市等古老建筑中发现。"));
+<variedcommodities:pipe_wrench>.addTooltip(format.gold("只有在原始状态下才出售，每天用铁锭修复"));
 
 //Add the Tool Used Description for Barrier Blocks:
 <dimstack:bedrock:7>.addTooltip(format.gold("可以使用副手装备的§4‡ §6§l残酷神器 - Theta§r §4‡§r来破坏。"));
@@ -620,7 +663,11 @@ recipes.remove(<biomesoplenty:berries>);
 recipes.remove(<biomesoplenty:plant_0:5>);
 recipes.remove(<biomesoplenty:gem:6>);
 recipes.remove(<biomesoplenty:gem_block:6>);
-recipes.remove(<biomesoplenty:terrestrial_artifact>);
+
+recipes.addShaped("dregora56",<biomesoplenty:terrestrial_artifact>,
+ [[<biomesoplenty:gem:1>,<biomesoplenty:gem:3>,<biomesoplenty:gem:7>],
+  [<biomesoplenty:gem:2>,<biomesoplenty:gem:5>,<iceandfire:sapphire_gem>],
+  [<biomesoplenty:gem:4>,<minecraft:emerald>,null]]);
 
 <biomesoplenty:mushroom:3>.displayName = "辉光菇";
 <biomesoplenty:terrarium:8>.displayName = "辉光菇生态缸";

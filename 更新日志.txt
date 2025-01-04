@@ -24,3 +24,7 @@
 1.脚本汉化更新
 2.死亡信息更新(resources\enhancedvisuals\lang\zh_cn.lang)
 3.chat 更新(config\rlmixins\dsurround_chat.cfg)
+
+=====1.0.5=====
+1.脚本汉化更新
+2.chat 更新(config\rlmixins\dsurround_chat.cfg)

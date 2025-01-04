@@ -71,79 +71,6 @@ print("Dregora Script starting!");
 
 var Logging = false;
 
-//DMG and health multiplier script for spawning entities
-events.onEntityJoinWorld(function(event as EntityJoinWorldEvent){
-
-    if event.entity.world.isRemote() {return;}
-
-    if (event.entity instanceof IEntityLivingBase) {
-
-        var EntityBase as IEntityLivingBase = event.entity;
-
-        if (event.world.dimension == 0) {
-
-            if (isNull(EntityBase)) {return;}
-            if (isNull(EntityBase.definition)) {return;}
-            if (isNull(EntityBase.definition.id)) {return;}
-
-            // Lower health of parasites in cities
-            if (EntityBase.definition.id has "srparasites") {
-
-                var BiomeName = event.world.getBiome(EntityBase.getPosition3f()).name;
-                for Biome in ParasiteBuffBiomes {
-
-                    if (BiomeName != Biome) {
-
-                        //HealthMultiply 0.5
-                        EntityBase.getAttribute("generic.maxHealth").applyModifier(AttributeModifier.createModifier("DregoraHealth", -0.5, 1));
-                        //EntityBase.health = EntityBase.maxHealth;
-
-                    }
-                }
-            }
-        }
-    }
-});
-
-events.onEntityLivingDamage(function(event as EntityLivingDamageEvent){
-
-    if event.entity.world.isRemote() {return;}
-
-    if (isNull(event.damageSource.trueSource)) {return;}
-    if (isNull(event.damageSource.trueSource.definition)) {return;}
-    if (isNull(event.damageSource.trueSource.definition.id)) {return;}
-
-    if event.damageSource.trueSource.world.dimension == 0 {
-
-        // Lower health of parasites in cities
-        var BiomeName = event.damageSource.trueSource.world.getBiome(event.entity.getPosition3f()).name;
-        for Biome in ParasiteBuffBiomes {
-            if (BiomeName != Biome) {
-                if !(event.damageSource.trueSource.definition.id == "srparasites:succor") && (event.damageSource.trueSource.definition.id has "srparasites") {
-
-                    //DMGMultiply 0.25
-                    event.amount = event.amount * 0.25;
-                }
-            }
-        }
-    }
-
-    if event.damageSource.trueSource.world.dimension == 3 {
-
-        // Lower DMG of parasites in underneath dimension
-        var BiomeName = event.damageSource.trueSource.world.getBiome(event.entity.getPosition3f()).name;
-        for Biome in ParasiteBuffBiomes {
-            if (BiomeName == Biome) {
-                if !(event.damageSource.trueSource.definition.id == "srparasites:succor") && (event.damageSource.trueSource.definition.id has "srparasites") {
-
-                    //DMGMultiply 0.8
-                    event.amount = event.amount * 0.8;
-                }
-            }
-        }
-    }
-
-});
 
 // Berries nerf
 events.onEntityLivingUseItemFinish(function(event as Finish){
@@ -448,27 +375,18 @@ events.onEntityLivingDamage(function(event as EntityLivingDamageEvent){
     }
 });
 
-//Trading with entity named Sussyberian makes you explode
-//Trading with entity named mentalberian makes you nausiated, fear, etc
+
 events.onPlayerInteractEntity(function(event as PlayerInteractEntityEvent){
 
+    if event.entity.world.isRemote() {return;}
     if (isNull(event.target.customName)) {return;}
 
-    // Villager zombies can still be named MentalBerian or Sussyberian and converted back but I left it like such because I think that's a fun thing to have for players
     if (!isNull(event.item)) {
         if (!isNull(event.item.definition.id)) {
             if (!isNull(event.item.tag)) {
                 if (!isNull(event.item.tag.display)) {
                     if (!isNull(event.item.tag.display.Name)) {
                         if (event.item.definition.id == "minecraft:name_tag") {
-
-                            if (event.target.definition.id == "minecraft:villager") {
-                                for name in BlackListEntitiesNameChangeVillager {
-                                    if ((name has event.target.customName) || (name has event.item.tag.display.Name)) {
-                                        event.cancel();
-                                    }
-                                }
-                            }
 
                             if (event.target.definition.id == "playerbosses:player_boss") {
                                 for name in BlackListEntitiesNameChangePlayerbosses {
@@ -498,29 +416,6 @@ events.onPlayerInteractEntity(function(event as PlayerInteractEntityEvent){
                 }
             }
         }
-    }
-
-    if ((event.target.customName == "Mentalberian") && (event.target.definition.id == "minecraft:villager")) {
-
-		if !event.entity.world.isRemote() {
-			var randomPotion = event.target.world.random.nextFloat(0, 13);
-			var RandomMentalPotion = MentalPotions[randomPotion];
-			event.player.addPotionEffect(<potion:mod_lavacow:soiled>.makePotionEffect(200, 1));
-			event.player.addPotionEffect(RandomMentalPotion.makePotionEffect(200, 1));
-		}
-        event.cancel();
-
-    }
-    if ((event.target.customName == "Sussyberian") && (event.target.definition.id == "minecraft:villager")) {
-
-		if !event.entity.world.isRemote() {
-			var randomPotion = event.target.world.random.nextFloat(0, 12);
-			var RandomSussyPotion = SussyPotions[randomPotion];
-			event.player.addPotionEffect(<potion:mod_lavacow:soiled>.makePotionEffect(200, 1));
-			event.player.addPotionEffect(RandomSussyPotion.makePotionEffect(1, 2));
-		}
-        event.cancel();
-
     }
 });
 
@@ -1251,31 +1146,6 @@ events.onEntityLivingUseItemFinish(function(event as Finish){
       }
 });
 
-events.onEntityJoinWorld(function(event as EntityJoinWorldEvent){
-
-    if (event.entity.world.isRemote()) { return; }
-
-    var definition = event.entity.definition;
-    if (isNull(definition)) { return; }
-
-    var EntityBiome = (event.entity.world.getBiome(event.entity.getPosition3f()).name);
-    // Deep Ocean & Ocean
-
-    //SRP squids spawning
-    if ((EntityBiome has "Ocean") || (EntityBiome has "Sea")) {
-        if ((definition.id) == "minecraft:squid") {
-
-            var RandomNum = event.entity.world.random.nextFloat(0, 100);
-            if RandomNum <= 3 {
-
-                val parasite_squid = <entity:srparasites:sim_squid>.createEntity(event.entity.world) as IEntity;
-                parasite_squid.setPosition(event.entity.position);
-                event.world.spawnEntity(parasite_squid);
-                event.cancel();
-            }
-        }
-    }
-});
 
 // SRParasites in overworld Script Biome Whitelist
 events.onEntityLivingUpdate(function(event as EntityLivingUpdateEvent){
@@ -1284,10 +1154,9 @@ events.onEntityLivingUpdate(function(event as EntityLivingUpdateEvent){
 
     if (!isNull(event.entity.definition)) {
         if (!isNull(event.entity.definition.name)) {
-            if (((event.entity.definition.name) has "srparasites") && ((event.entity.definition.name) != "srparasites.sim_squid")) {
+            if ((event.entity.definition.name) has "srparasites")  {
 
                 if ((event.entity.world.getDimension()) == 0) || ((event.entity.world.getDimension()) == 3) {
-
 
                     var entityBase as IEntityLivingBase = event.entity;
                     var entityName = (event.entity.definition.name);
