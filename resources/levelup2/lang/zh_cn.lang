@@ -108,3 +108,5 @@ levelup.respec.lowlevel=§e等级太低,必须达到 %s 级§r
 
 sneak.attack=偷袭 %d 倍伤害!
 level.invalid=§e§l[升级!]§r§e 你必须达到5级才能选择专精。§r
+
+key.categories.gui=LevelUp2

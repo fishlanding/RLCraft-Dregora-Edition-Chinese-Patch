@@ -1,0 +1,13 @@
+## From config/DLDungeonsJBG/nbt.cfg
+# Needs "Localizator"
+item.dldungeons.SLICE=§a§o清洁切片机
+item.dldungeons.EEGG5=§a§o幸运之星
+item.dldungeons.EGGLORE0=§5§o信不信由你，这来自
+item.dldungeons.EGGLORE1=§5§o一个古老的原始世界。
+item.dldungeons.AP5=§a§o银河远足靴
+item.dldungeons.APLORE0=§5§o在铁砧上精心锻造
+item.dldungeons.FV4=§a§o铁真理之斧
+item.dldungeons.FVLORE0=§5§o用于动态砍树
+item.dldungeons.LC5=§a§o狼人的第一根魔杖
+item.dldungeons.LCLORE0=§5§o或许世界上最伟大的召唤师
+item.dldungeons.LCLORE1=§5§o是狼人的一员。

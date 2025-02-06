@@ -1,2 +1,11 @@
 item.quark：chain.name=链环
 item.quark：tallow.name=未精制的牛油
+
+# Custom PathFinder maps from config/quark.cfg
+# Quark already supports lang keys for its maps :D
+quark.biomeMap.plains_defiled = 被污染之地路径规划地图
+quark.biomeMap.forest_vilespine = 被污染之地路径规划地图
+quark.biomeMap.desert_defiled = 被污染之地路径规划地图
+quark.biomeMap.iceandfire:glacier = 冰川路径规划地图
+quark.biomeMap.traverse:meadow = 草甸路径规划地图
+quark.biomeMap.traverse:badlands = 恶地路径规划地图

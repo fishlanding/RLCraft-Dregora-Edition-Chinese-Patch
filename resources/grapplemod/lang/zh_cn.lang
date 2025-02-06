@@ -1,3 +1,5 @@
 enchantment.grapplemod.wallrunenchantment.desc=让你在墙上奔跑...呃。
 enchantment.grapplemod.doublejumpenchantment.desc=提供二段跳能力。
 enchantment.grapplemod.slidingenchantment.desc=让你按住潜行来滑行。保持动量。
+
+grapplemod.subtitle.double.jump=二段跳
